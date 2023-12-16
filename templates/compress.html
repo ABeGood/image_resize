@@ -1,0 +1,29 @@
+<!-- compress.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compression Result</title>
+</head>
+<body>
+    <h1>Compression Result</h1>
+    <p>Uploaded Image:</p>
+    <img src="{{ url_for('static', filename=filename) }}" alt="Compressed Image">
+    <form action="/compress" method="post">
+        <input type="hidden" name="filename" value="{{ filename }}">
+        <p>Choose formats:</p>
+        <label><input type="checkbox" name="formats" value="png"> PNG</label>
+        <label><input type="checkbox" name="formats" value="jpg"> JPG</label>
+        <label><input type="checkbox" name="formats" value="webp"> WEBP</label>
+        <p>Set compression limits (in KB):</p>
+        <label>PNG Limit: <input type="text" name="png_limit" value="100"></label><br>
+        <label>JPG Limit: <input type="text" name="jpg_limit" value="100"></label><br>
+        <label>WEBP Limit: <input type="text" name="webp_limit" value="100"></label><br>
+        <p>Set resize factor:</p>
+        <label>Resize Factor: <input type="text" name="resize_factor" value="2"></label><br>
+        <input type="submit" value="Compress and Download">
+    </form>
+</body>
+</html>
