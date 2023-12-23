@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Upscaler</title>
+    <link rel="stylesheet" href="static/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>IMAGE UPSCALER</h1>
+            <p>Upscale, denoise and enhance your images in seconds</p>
+        </header>
+        <main>
+            <div class="upscaler-box">
+                <div class="options">
+                    <div class="format-option">
+                        <label for="format">Choose format</label>
+                        <select id="format">
+                            <option value="png">PNG</option>
+                            <option value="jpg">JPEG</option>
+                            <option value="webp">WEBP</option>
+                        </select>
+                    </div>
+                    <div class="compression-option">
+                        <label for="compression">Compression level</label>
+                        <input type="range" id="compression" min="0" max="100" value="50">
+                    </div>
+                    <button>Download</button>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

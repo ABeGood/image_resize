@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Upscaler</title>
+    <link rel="stylesheet" href="static/upload_style.css">
+</head>
+<body>
+    <div class="upload-container">
+        <header>
+            <h1>IMAGE UPSCALER</h1>
+            <p>Upscale, denoise and enhance your images in seconds</p>
+        </header>
+        <div class="upload-box">
+            <p>Click, paste, or drop up to 10 files here to start</p>
+            <input type="file" id="file-upload" multiple>
+            <label for="file-upload" class="file-upload-label">Choose files</label>
+            <button type="submit">Upload</button>
+            <h1>Image Compression</h1>
+    <form action="/upload" method="post" enctype="multipart/form-data">
+        <input type="file" name="file" accept="image/*" required>
+        <input type="submit" value="Upload">
+        <button type="submit">Upload</button>
+    </form>
+        </div>
+    </div>
+</body>
+</html>
