@@ -1,3 +1,4 @@
+/* Ваш CSS-код здесь */
 body, html {
     height: 100%;
     margin: 0;
@@ -34,32 +35,70 @@ header p {
     margin: 20px 0;
 }
 
-input[type="file"] {
-    display: none; /* Hide the default file input */
+.file-upload-container {
+    width: 600px;
+    height: 300px;
+    border: 2px dashed #ccc;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    border-radius: 10px;
+    margin: 20px auto;
 }
 
 .file-upload-label {
+    font-size: 18px;
+    margin-top: 10px;
     display: inline-block;
-    background-color: #06f;
-    color: #fff;
+    color: #585b60;
     padding: 10px 20px;
     margin: 10px 0;
     border-radius: 5px;
     cursor: pointer;
 }
 
+.file-upload-input {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+}
+
 button {
     display: block;
-    width: 200px;
+    width: 300px;
     margin: 20px auto;
-    padding: 10px;
+    padding: 15px;
     background-color: #06f;
     color: #fff;
     border: none;
-    border-radius: 5px;
+    border-radius: 10px;
     cursor: pointer;
 }
 
 button:hover {
     background-color: #0056b3;
+}
+
+#preview-container {
+    display: flex;
+    justify-content: space-around;
+}
+
+#preview-container img {
+    max-width: 100px;
+    max-height: 100px;
+    margin: 0 10px;
+}
+
+.thumbnail {
+    max-width: 100px;
+    max-height: 100px;
+    margin: 5px;
+    border: 1px solid #ddd;
 }
