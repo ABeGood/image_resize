@@ -6,7 +6,7 @@ import zipfile
 
 app = Flask(__name__)
 
-UPLOAD_FOLDER = 'uploads'
+UPLOAD_FOLDER = 'static/uploads'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'webp'}
@@ -42,15 +42,17 @@ def upload():
         return redirect(request.url)
     file = request.files['file']
     if file.filename == '':
-        return redirect(request.url)
+        # return redirect(request.url)
+        file.filename = 'file_1.png'
     if file and allowed_file(file.filename):
         filename = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
+
         file.save(filename)
-        return render_template('compress.html', filename=filename)
+        return render_template('compress.html', filename=file.filename)
     else:
         return "Invalid file format."
 
-@app.route('/compress', methods=['POST'])
+@app.route('/compress', methods=['POST', 'GET'])
 def compress():
     filename = request.form.get('filename')
     formats = request.form.getlist('formats')

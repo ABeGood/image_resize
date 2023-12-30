@@ -1,36 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Image Upscaler</title>
-    <link rel="stylesheet" href="static/style.css">
+    <link rel="stylesheet" href="static/compressor_style.css">
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 </head>
+
 <body>
     <div class="container">
-        <header>
+        <div class="header">
             <h1>IMAGE UPSCALER</h1>
             <p>Upscale, denoise and enhance your images in seconds</p>
-        </header>
-        <main>
-            <div class="upscaler-box">
-                <div class="options">
-                    <div class="format-option">
-                        <label for="format">Choose format</label>
-                        <select id="format">
-                            <option value="png">PNG</option>
-                            <option value="jpg">JPEG</option>
-                            <option value="webp">WEBP</option>
-                        </select>
-                    </div>
-                    <div class="compression-option">
-                        <label for="compression">Compression level</label>
-                        <input type="range" id="compression" min="0" max="100" value="50">
-                    </div>
-                    <button>Download</button>
-                </div>
+        </div>
+        <div class="content">
+            <div class="canvas">
+                <img src="{{ url_for('static', filename='uploads/' + filename) }}" alt="Compressed Image">
             </div>
-        </main>
+            <div class="options">
+                <div class="format-option">
+                    <label for="format">Choose format</label>
+                    <select id="format">
+                        <option value="png">PNG</option>
+                        <option value="jpg">JPEG</option>
+                        <option value="webp">WEBP</option>
+                    </select>
+                </div>
+                <div class="compression-option">
+                    <label for="compression">Compression level</label>
+                    <input type="range" id="compression" min="0" max="100" value="50">
+                </div>
+                <button id="add-block" onclick="addFormatOption()">+</button>
+            </div>
+        </div>
+
+        <script>
+            // Function to add a format option block
+            function addFormatOption() {
+                const options = document.querySelector('.options');
+                const clone = options.cloneNode(true);
+                document.querySelector('.content').appendChild(clone);
+            }
+        </script>
     </div>
 </body>
+
 </html>
