@@ -3,13 +3,16 @@
 
 function addPanel() {
     var settingsContainer = document.querySelector('.settings-container');
+    var addButton = document.querySelector('.add-panel');
     // Assuming the first child of settingsContainer is the settings panel template
     var panelTemplate = settingsContainer.getElementsByClassName('settings-panel')[0];
     var newPanel = panelTemplate.cloneNode(true);
+    newPanel.className = 'settings-panel';
     // Set up the delete button event handler in the cloned panel
     newPanel.querySelector('.delete-panel').onclick = function() { deletePanel(this); };
-    settingsContainer.appendChild(newPanel);
+    settingsContainer.insertBefore(newPanel, addButton);
 }
+
 
 function deletePanel(button) {
     var settingsContainer = document.querySelector('.settings-container');

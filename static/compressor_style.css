@@ -113,8 +113,9 @@ header p {
 }
 
 .settings-panel {
-    /* ...existing styles... */
-    margin-left: 20px; /* Adds some space between the image preview and settings panel */
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Adjust as needed */
 }
 
 .add-panel {
@@ -122,6 +123,7 @@ header p {
     /* Position the plus button relative to the content area */
     right: calc(100% - 600px - 20px - 50px); /* 100% of the content area minus image preview width, margin, and button width */
     bottom: 20px; /* Position from the bottom of the content area */
+    margin-top: 10px; /* Add some space above the button */
 }
 .main-content {
     display: flex;
@@ -149,8 +151,7 @@ header p {
 .settings-container {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    align-items: flex-start; /* Align items to the start of the flex container */
+    align-items: center; /* Adjust as needed */
 }
 
 .settings-panel {
@@ -164,9 +165,9 @@ header p {
 
 .add-panel {
     /* ...existing styles... */
-    position: absolute;
-    right: 20px;
-    bottom: 20px;
+    position: relative;
+    right: 0px;
+    bottom: 5px;
 }
 
 .delete-panel {
