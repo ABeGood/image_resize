@@ -70,7 +70,7 @@ def compress():
 
         output_file = os.path.join(output_folder, f'{os.path.basename(filename).rsplit(".", 1)[0]}.{format}')
 
-        compress_image(filename, output_file, max_size=limits['png'])
+        compress_image(filename, output_file, max_size=limits[format])
 
         compressed_files.append(output_file)
 
