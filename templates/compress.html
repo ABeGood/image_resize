@@ -20,10 +20,9 @@
         </div>
         
         <div class="settings-container">
+            <button class="download-all" onclick="downloadAll()">Download all</button>
             <!-- Settings panel will go here -->
-            <div class="settings-panel">
-                <button class="download-all">Download all</button>
-                
+            <div class="settings-panel">                
                 <label for="format">Choose format</label>
                 <select id="format">
                     <option value="png">PNG</option>
@@ -37,7 +36,10 @@
                 <label for="size">Size</label>
                 <input type="text" id="size" value="128 kB" readonly>
                 
-                <button class="download">Download</button>
+                <form action="/compress" method="post">
+                    <button class="download">Download</button>
+                </form>
+                
             </div>
             <!-- Additional panels will be added here -->
         </div>
