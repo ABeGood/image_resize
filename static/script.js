@@ -86,3 +86,23 @@ document.addEventListener('DOMContentLoaded', () => {
             });
     }
 });
+
+function addPanel() {
+    var panels = document.getElementById('panels');
+    var newPanel = panels.firstElementChild.cloneNode(true);
+    panels.appendChild(newPanel);
+  }
+  
+  // Add event listeners to handle changes in form controls
+  document.addEventListener('input', function (event) {
+    if (event.target.type === 'range') {
+      // TODO: Update size value based on compression level
+      // This value should also be sent to the backend
+    }
+  });
+  
+  document.addEventListener('click', function (event) {
+    if (event.target.id === 'download') {
+      // TODO: Trigger backend Python function
+    }
+  });
