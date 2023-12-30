@@ -82,7 +82,60 @@ async function downloadImage(buttonElement) {
     }
 }
 
-function downloadAll() {
-    // Logic to handle the download of all items
-    alert("Downloading all items..."); // Placeholder action
+async function downloadAll() {
+    // Find all settings panels
+    const settingsPanels = document.querySelectorAll('.settings-panel');
+
+    settingsPanels.forEach(async (panel) => {
+        // Extract values for format, size, and filename from each settings panel
+        const format = panel.querySelector('.format').value;
+        const size = panel.querySelector('.size').value;
+        const filename = panel.querySelector('.filename').value;
+
+        // Prepare the data to be sent in the POST request
+        const data = {
+            'filename': filename,
+            'format': format,
+            'size': size
+        };
+
+        // Send the POST request to the Flask endpoint
+        try {
+            const response = await fetch('/compress', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            // Handle the response
+            const contentDisposition = response.headers.get('Content-Disposition');
+            if (contentDisposition && contentDisposition.indexOf('attachment') !== -1) {
+                // If the response is a file, handle the file download
+                const blob = await response.blob();
+                downloadBlob(blob, `downloaded-${size}.${format}`);
+            } else {
+                // If the response is JSON, handle accordingly
+                const responseData = await response.json();
+                console.log('Success:', responseData);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    });
+}
+
+function downloadBlob(blob, filename) {
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
 }
