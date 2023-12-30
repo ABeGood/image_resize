@@ -17,14 +17,24 @@ function deletePanel(button) {
     settingsContainer.removeChild(panelToRemove);
 }
 
+document.addEventListener('DOMContentLoaded', function() {
+    // Add event listener to all size input fields
+    document.querySelectorAll('.size').forEach(function(sizeInput) {
+        sizeInput.addEventListener('input', function(event) {
+            // Replace any non-digit characters with an empty string
+            event.target.value = event.target.value.replace(/\D/g, '');
+        });
+    });
+});
+
 async function downloadImage(buttonElement) {
     // Find the nearest parent settings panel
     var settingsPanel = buttonElement.closest('.settings-panel');
 
-    // Extract values for format and size from the specific settings panel
-    var format = document.getElementById('format').value;
-    var size = document.getElementById('size').value;
-    var filename = document.getElementById('filename').value;
+    // Extract values for format, size, and filename from the specific settings panel
+    var format = settingsPanel.querySelector('.format').value;
+    var size = settingsPanel.querySelector('.size').value;
+    var filename = settingsPanel.querySelector('.filename').value;
 
     // Prepare the data to be sent in the POST request
     var data = {
