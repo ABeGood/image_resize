@@ -168,3 +168,17 @@ header p {
     right: 20px;
     bottom: 20px;
 }
+
+.delete-panel {
+    background-color: #ff4d4d; /* Red color for delete action */
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.delete-panel:hover {
+    background-color: #ff3333; /* Darker red on hover */
+}

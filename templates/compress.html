@@ -22,24 +22,24 @@
         <div class="settings-container">
             <button class="download-all" onclick="downloadAll()">Download all</button>
             <!-- Settings panel will go here -->
-            <div class="settings-panel">                
+            <div class="settings-panel">
                 <label for="format">Choose format</label>
                 <select id="format">
                     <option value="png">PNG</option>
                     <option value="jpeg">JPEG</option>
                     <option value="webp">WEBP</option>
                 </select>
+
+                <input type="hidden" id="filename" name="filename" value="{{ url_for('static', filename='uploads/' + filename) }}">
                 
                 <label for="compression">Compression level</label>
                 <input type="range" id="compression" min="0" max="100" value="50">
                 
                 <label for="size">Size</label>
-                <input type="text" id="size" value="128 kB" readonly>
+                <input type="text" id="size" name="size" value="128" readonly>
                 
-                <form action="/compress" method="post">
-                    <button class="download">Download</button>
-                </form>
-                
+                <button class="download" onclick="downloadImage(this)">Download</button>
+                <button class="delete-panel" onclick="deletePanel(this)">Delete</button>
             </div>
             <!-- Additional panels will be added here -->
         </div>
