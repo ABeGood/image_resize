@@ -1,7 +1,9 @@
 document.addEventListener('DOMContentLoaded', () => {
+    const uploadButton = document.getElementById('upload-button');
     const fileUploadContainer = document.getElementById('file-upload-container');
     const thumbnailsContainer = document.getElementById('thumbnails-container');
     const uploadBox = document.getElementById('upload-box');
+    const fileUploadInput = document.getElementById('file-upload');
 
     uploadBox.addEventListener('dragover', (event) => {
         event.preventDefault();
@@ -17,15 +19,16 @@ document.addEventListener('DOMContentLoaded', () => {
         fileUploadContainer.classList.remove('dragover');
         handleFiles(event.dataTransfer.files);
     });
-
-    const fileUploadInput = document.getElementById('file-upload');
     
-    fileUploadInput.addEventListener('change', (event) => {
-        handleFiles(event.target.files);
+    fileUploadInput.addEventListener('change', () => {
+        handleFiles(fileUploadInput.files);
     });
 
-    fileUploadContainer.addEventListener('click', () => {
-        fileUploadInput.click();
+    fileUploadContainer.addEventListener('click', (event) => {
+        // Only trigger click on file input if the clicked element is not the file input itself
+        if (event.target !== fileUploadInput) {
+            fileUploadInput.click();
+        }
     });
 
     document.addEventListener('paste', (event) => {
@@ -61,6 +64,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 thumbnailsContainer.appendChild(thumbnail);
             }
         }
+
+        // AG: can do a lot of stuf here
+        if (files.length > 0) {
+            uploadButton.disabled = false;
+            console.log('Files selected, button enabled');
+        } else {
+            uploadButton.disabled = true;
+            console.log('No files selected, button disabled');
+        }
     }
 
     function uploadFiles(files) {
@@ -85,6 +97,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.error('Error during upload', error);
             });
     }
+
+    // Event listener for form submission
+    document.querySelector('form').addEventListener('submit', function(event) {
+        if (fileUploadInput.files.length === 0) {
+            event.preventDefault(); // Prevent form submission
+            alert('Please select files to upload.');
+            return false;
+        }
+        // Proceed with form submission (files are present)
+        // Optionally, you could disable the button again here
+        uploadButton.disabled = true;
+    });
 });
 
 function addPanel() {
