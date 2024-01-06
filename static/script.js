@@ -58,20 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         for (let i = 0; i < filesToUpload.length; i++) {
             const file = filesToUpload[i];
-            const thumbnail = document.createElement('img');
-                thumbnail.classList.add('thumbnail');
-                thumbnail.file = file;
-
-                const reader = new FileReader();
-                reader.onload = (function(thumbnail) {
-                    return function(e) {
-                        thumbnail.src = e.target.result;
-                    };
-                })(thumbnail);
-
-                reader.readAsDataURL(file);
-
-                thumbnailsContainer.appendChild(thumbnail);
+            addThumbnail(file);
         }
 
         // AG: can do a lot of stuf here
@@ -82,6 +69,35 @@ document.addEventListener('DOMContentLoaded', () => {
             uploadButton.disabled = true;
             console.log('No files selected, button disabled');
         }
+    }
+
+    function removeFile(fileToRemove) {
+        filesToUpload = filesToUpload.filter(file => file !== fileToRemove);
+        if (filesToUpload.length > 0) {
+            uploadButton.disabled = false;
+            console.log('Files selected, button enabled');
+        } else {
+            uploadButton.disabled = true;
+            console.log('No files selected, button disabled');
+        }
+    }
+
+    function addThumbnail(file) {
+        const container = document.createElement('div');
+        container.classList.add('thumbnail-container');
+    
+        const thumbnail = document.createElement('img');
+        thumbnail.classList.add('thumbnail');
+        thumbnail.src = URL.createObjectURL(file); // Setting the source of the image
+    
+        container.appendChild(thumbnail);
+    
+        container.addEventListener('click', () => {
+            removeFile(file);
+            container.remove(); // Remove the thumbnail container
+        });
+    
+        thumbnailsContainer.appendChild(container);
     }
 
     function uploadFiles(files) {

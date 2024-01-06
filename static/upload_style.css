@@ -106,3 +106,19 @@ button:disabled {
     background-color: #ccc;
     cursor: not-allowed;
 }
+
+.thumbnail-container {
+    position: relative;
+    display: inline-block; /* or another display type as per your layout */
+    margin: 5px;
+}
+
+.thumbnail-container:hover::after {
+    content: '✖'; /* Cross symbol */
+    position: absolute;
+    top: 0;
+    right: 0;
+    font-size: 24px;
+    color: red;
+    cursor: pointer;
+}
