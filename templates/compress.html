@@ -41,7 +41,7 @@
                     <option value="webp">WEBP</option>
                 </select>
             
-                <input type="hidden" class="filename" name="filename" value="{{ url_for('static', filename='uploads/' + filenames[1]) }}">
+                <input type="hidden" class="filename" name="filename" value="{{ url_for('static', filename='uploads/' + filenames[0]) }}">
                 
                 <label for="compression">Compression level</label>
                 <input type="range" class="compression" min="0" max="100" value="50">
