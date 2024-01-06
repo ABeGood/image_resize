@@ -104,8 +104,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const formData = new FormData();
 
         for (let i = 0; i < files.length; i++) {
-            const file = filesToUpload[i];
-            formData.append('files[]', file, file.name);
+            formData.append('files[]', files[i], files[i].name);
         }
 
         fetch('/upload', {
@@ -130,8 +129,7 @@ document.addEventListener('DOMContentLoaded', () => {
             alert('Please select files to upload.');
             return false;
         }
-        // Proceed with form submission (files are present)
-        // Optionally, you could disable the button again here
+        uploadFiles(filesToUpload);
         uploadButton.disabled = true;
     });
 });
@@ -143,17 +141,3 @@ function addPanel() {
     var newPanel = panels.firstElementChild.cloneNode(true);
     panels.appendChild(newPanel);
   }
-  
-  // Add event listeners to handle changes in form controls
-  document.addEventListener('input', function (event) {
-    if (event.target.type === 'range') {
-      // TODO: Update size value based on compression level
-      // This value should also be sent to the backend
-    }
-  });
-  
-  document.addEventListener('click', function (event) {
-    if (event.target.id === 'download') {
-      // TODO: Trigger backend Python function
-    }
-  });

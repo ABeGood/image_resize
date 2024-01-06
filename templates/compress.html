@@ -16,7 +16,7 @@
 
     <div class="main-content">
         <div class="image-preview">
-            <img src="{{ url_for('static', filename='uploads/' + filename) }}" alt="Uploaded Image">
+            <img src="{{ url_for('static', filename='uploads/' + filenames[1]) }}" alt="Uploaded Image">
         </div>
         
         <div class="settings-container">
@@ -30,7 +30,7 @@
                     <option value="webp">WEBP</option>
                 </select>
             
-                <input type="hidden" class="filename" name="filename" value="{{ url_for('static', filename='uploads/' + filename) }}">
+                <input type="hidden" class="filename" name="filename" value="{{ url_for('static', filename='uploads/' + filenames[1]) }}">
                 
                 <label for="compression">Compression level</label>
                 <input type="range" class="compression" min="0" max="100" value="50">

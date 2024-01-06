@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, redirect, send_file, jsonify
+from werkzeug.utils import secure_filename
 from PIL import Image
 import os
 import shutil
@@ -40,19 +41,18 @@ def index():
 
 @app.route('/upload', methods=['POST'])
 def upload():
-    if 'file' not in request.files:
-        return redirect(request.url)
-    file = request.files['file']
-    if file.filename == '':
-        # return redirect(request.url)
-        file.filename = 'file_1.png'
-    if file and allowed_file(file.filename):
-        filename = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
-
-        file.save(filename)
-        return render_template('compress.html', filename=file.filename)
-    else:
-        return "Invalid file format."
+    print(request.files)  # Debug statement
+    print(request.files.keys())   # Additional debug for form data
+    uploaded_files = request.files.getlist('file')
+    filenames = []
+    for file in uploaded_files:
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            filenames.append(filename)
+        else:
+            return "Invalid file format."
+    return render_template('compress.html', filenames=filenames)
 
 @app.route('/compress', methods=['POST'])
 def compress():
