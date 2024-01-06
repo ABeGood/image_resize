@@ -133,6 +133,12 @@ async function downloadAll() {
     });
 }
 
+function selectImage(imagePath) {
+    // Update the 'src' of the main image to the clicked thumbnail's image
+    const mainImage = document.getElementById('main-image');
+    mainImage.src = imagePath;
+}
+
 function downloadBlob(blob, filename) {
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');

@@ -15,10 +15,21 @@
     </header>
 
     <div class="main-content">
-        <div class="image-preview">
-            <img src="{{ url_for('static', filename='uploads/' + filenames[1]) }}" alt="Uploaded Image">
+        <div class="left-content">
+            <div class="image-preview">
+                <!-- The first image in the filenames list will be shown initially -->
+                <img id="main-image" src="{{ url_for('static', filename='uploads/' + filenames[0]) }}" alt="Main Image">
+            </div>
+
+            <!-- Thumbnails Container -->
+            <div class="thumbnails-container">
+                {% for filename in filenames %}
+                    <img src="{{ url_for('static', filename='uploads/' + filename) }}" alt="Thumbnail" class="thumbnail" onclick="selectImage('{{ url_for('static', filename='uploads/' + filename) }}')">
+                {% endfor %}
+            </div>
         </div>
         
+        <!-- Right side: Settings Panels -->
         <div class="settings-container">
             <button class="download-all" onclick="downloadAll()">Download all</button>
             <!-- Settings panel will go here -->
