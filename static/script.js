@@ -1,9 +1,15 @@
+
 document.addEventListener('DOMContentLoaded', () => {
     const uploadButton = document.getElementById('upload-button');
     const fileUploadContainer = document.getElementById('file-upload-container');
     const thumbnailsContainer = document.getElementById('thumbnails-container');
     const uploadBox = document.getElementById('upload-box');
     const fileUploadInput = document.getElementById('file-upload');
+
+
+    fileUploadInput.addEventListener('change', () => {
+        handleFiles(fileUploadInput.files);
+    });
 
     uploadBox.addEventListener('dragover', (event) => {
         event.preventDefault();
@@ -19,10 +25,6 @@ document.addEventListener('DOMContentLoaded', () => {
         fileUploadContainer.classList.remove('dragover');
         handleFiles(event.dataTransfer.files);
     });
-    
-    fileUploadInput.addEventListener('change', () => {
-        handleFiles(fileUploadInput.files);
-    });
 
     fileUploadContainer.addEventListener('click', (event) => {
         // Only trigger click on file input if the clicked element is not the file input itself
@@ -33,13 +35,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.addEventListener('paste', (event) => {
         const items = event.clipboardData.items;
+        let validFiles = [];
         for (let index in items) {
             const item = items[index];
             if (item.kind === 'file') {
-                handleFiles([item.getAsFile()]);
-                break;
+                const file = item.getAsFile();
+                if (file && file.type.startsWith('image/')) {
+                    validFiles.push(file)
+                }
             }
         }
+        handleFiles(validFiles);
     });
 
     function handleFiles(files) {
@@ -47,8 +53,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         for (let i = 0; i < files.length; i++) {
             const file = files[i];
-            if (file.type.startsWith('image/')) {
-                const thumbnail = document.createElement('img');
+            filesToUpload.push(file);
+        }
+
+        for (let i = 0; i < filesToUpload.length; i++) {
+            const file = filesToUpload[i];
+            const thumbnail = document.createElement('img');
                 thumbnail.classList.add('thumbnail');
                 thumbnail.file = file;
 
@@ -62,11 +72,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 reader.readAsDataURL(file);
 
                 thumbnailsContainer.appendChild(thumbnail);
-            }
         }
 
         // AG: can do a lot of stuf here
-        if (files.length > 0) {
+        if (filesToUpload.length > 0) {
             uploadButton.disabled = false;
             console.log('Files selected, button enabled');
         } else {
@@ -79,7 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const formData = new FormData();
 
         for (let i = 0; i < files.length; i++) {
-            const file = files[i];
+            const file = filesToUpload[i];
             formData.append('files[]', file, file.name);
         }
 
@@ -100,7 +109,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Event listener for form submission
     document.querySelector('form').addEventListener('submit', function(event) {
-        if (fileUploadInput.files.length === 0) {
+        if (filesToUpload.files.length === 0) {
             event.preventDefault(); // Prevent form submission
             alert('Please select files to upload.');
             return false;
@@ -110,6 +119,8 @@ document.addEventListener('DOMContentLoaded', () => {
         uploadButton.disabled = true;
     });
 });
+
+let filesToUpload = [];
 
 function addPanel() {
     var panels = document.getElementById('panels');
