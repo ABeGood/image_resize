@@ -28,6 +28,24 @@
                     {% endfor %}
                 </div>
             </div>
+
+
+            <div id ="settings-panel-template" style="display: none;">
+                <!-- Your settings panel structure here -->
+                <label for="format">Choose format</label>
+                <select class="format">
+                    <option value="png">PNG</option>
+                    <option value="jpeg">JPEG</option>
+                    <option value="webp">WEBP</option>
+                </select>
+
+                <input type="hidden" class="filename" name="filename" value="{{ url_for('static', filename=filenames) }}">
+                
+                <label for="size">Size</label>
+                <input type="number" class="size" name="size" value="128" min="0" style="-moz-appearance: textfield;">                    
+                <button class="download" onclick="downloadOutput(this)">Download output</button>
+                <button class="delete-panel" onclick="deletePanel(this)">Delete</button>
+            </div>
             
             <!-- Right side: Settings Panels -->
             <div class="settings-container">
@@ -58,8 +76,6 @@
     <script>
         // Initialize an empty array
         var filenames = [];
-        
-        // Use Flask template to populate the array
         {% for filename in filenames %}
             filenames.push('{{ url_for('static', filename='uploads/' + filename) }}');
         {% endfor %}

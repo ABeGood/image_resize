@@ -60,6 +60,7 @@ def compress():
     if request.is_json:
         args = request.get_json()
 
+        # TODO: if "Download all, but the formats are same -> no inner folders"
         if args.get('type') == 'single':
             filenames = args.get('filenames')
             format = args.get('format')

@@ -4,12 +4,19 @@
 function addPanel() {
     var settingsContainer = document.querySelector('.settings-container');
     var addButton = document.querySelector('.add-panel');
-    // Assuming the first child of settingsContainer is the settings panel template
-    var panelTemplate = settingsContainer.getElementsByClassName('settings-panel')[0];
+    
+    // Use the hidden settings panel template for cloning
+    var panelTemplate = document.getElementById('settings-panel-template');
     var newPanel = panelTemplate.cloneNode(true);
+
+    // Remove the ID and make the panel visible
+    newPanel.id = '';
+    newPanel.style.display = '';
     newPanel.className = 'settings-panel';
+
     // Set up the delete button event handler in the cloned panel
     newPanel.querySelector('.delete-panel').onclick = function() { deletePanel(this); };
+
     settingsContainer.insertBefore(newPanel, addButton);
 }
 
@@ -88,6 +95,12 @@ async function downloadOutput(buttonElement) {
 async function downloadAll() {
     // Find all settings panels
     const settingsPanels = document.querySelectorAll('.settings-panel');
+
+    if (settingsPanels.length === 0) {
+        alert('No outputs to process.');
+        return;
+    }
+
     const outputs = []
 
     settingsPanels.forEach(async (panel) => {
