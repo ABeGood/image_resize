@@ -16,38 +16,50 @@ body, html {
 header h1 {
     margin: 0;
     font-size: 2em;
+    text-align: center;
 }
 
 header p {
     margin: 10px 0 30px;
     color: #aaa;
+    text-align: center;
 }
 
 .settings-panel {
     background: #333;
     border-radius: 10px;
-    padding: 20px;
+    padding: 0 20px 20px 20px;
     width: 300px;
     position: relative;
+    text-align: center;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 .settings-panel label {
     display: block;
     margin-top: 10px;
+    margin-bottom: 20px;
 }
 
-.settings-panel select, .settings-panel input[type="number"] {
-    width: 100%;
+.settings-panel select,
+.settings-panel input[type="number"],
+.settings-panel input[type="range"] {
+    width: calc(100% - 40px); /* Учитывает внутренние отступы и другие бокс-размытие */
     padding: 10px;
-    margin-top: 5px;
+
     background: #555;
     border: none;
     border-radius: 5px;
     color: white;
+    box-sizing: border-box; /* Учитывает отступы и границы в общей ширине */
 }
 
 .settings-panel input[type="range"] {
-    width: 100%;
     margin: 10px 0;
 }
 
@@ -58,15 +70,17 @@ header p {
     padding: 10px 15px;
     border-radius: 5px;
     cursor: pointer;
-    width: 100%;
+    width: calc(100% - 40px); /* Ширина минус отступы */
     box-sizing: border-box;
     margin-top: 10px;
+    max-width: 100%; /* Ограничение по максимальной ширине */
 }
 
 .download-all {
     background-color: #555;
-    /* align-self: stretch; If you want the button to stretch the full width of the container */
-    margin-bottom: 10px; /* Add margin at the bottom */
+    margin-bottom: 10px; 
+    margin-top: 0px;/* Add margin at the bottom */
+    width: 100%;
 }
 
 .add-panel {
@@ -112,12 +126,6 @@ header p {
     object-fit: contain; /* Ensures the image keeps its aspect ratio */
 }
 
-.settings-panel {
-    display: flex;
-    flex-direction: column;
-    align-items: center; /* Adjust as needed */
-}
-
 .add-panel {
     /* ...existing styles... */
     /* Position the plus button relative to the content area */
@@ -130,7 +138,7 @@ header p {
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
-    padding: 20px;
+    padding: 30px;
 }
 
 /* Left content styles */
@@ -138,22 +146,30 @@ header p {
     display: flex;
     flex-direction: column;
     align-items: center;
-    max-width: 60%; /* Adjust based on your layout preferences */
+   padding-right: 20px;
+    max-height: 1000px; /* Задайте максимальную высоту блока, подстраивая под ваши нужды */
+    overflow-y: auto; 
 }
 
 /* Image preview styles */
 .image-preview {
-    width: 1000px; /* Full width of the left content area */
-    margin-bottom: 20px; /* Space between image preview and thumbnails */
+    max-width: 100%;
+    max-height: 100%;
+    overflow: hidden;
+    border-radius: 10px;
+    align-items: flex-start;
 }
 
 /* Thumbnails container styles */
 .thumbnails-container {
-    width: 100%; /* Full width of the left content area */
+    width: 600px;
+    max-height: 100%;
+    margin-top: 20px;
     display: flex;
-    justify-content: center; /* Center thumbnails */
+    justify-content: center;
     flex-wrap: wrap;
-    gap: 10px; /* Spacing between thumbnails */
+    gap: 10px;
+
 }
 
 .thumbnail {
@@ -173,17 +189,7 @@ header p {
     align-items: center; /* Adjust as needed */
 }
 
-.settings-panel {
-    background: #333;
-    border-radius: 10px;
-    padding: 20px;
-    width: 300px;
-    margin-bottom: 10px; /* Spacing between panels */
-    box-sizing: border-box;
-}
-
 .add-panel {
-    /* ...existing styles... */
     position: relative;
     right: 0px;
     bottom: 5px;
@@ -203,3 +209,11 @@ header p {
     background-color: #ff3333; /* Darker red on hover */
 }
 
+.size::-webkit-inner-spin-button,
+.size::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+.size {
+    -moz-appearance: textfield;
+}

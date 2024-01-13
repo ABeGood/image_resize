@@ -1,64 +1,60 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Image Upscaler</title>
-    <link rel="stylesheet" href="static/compressor_style.css">
-</head>
-<body>
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Image Upscaler</title>
+        <link rel="stylesheet" href="static/compressor_style.css">
+    </head>
+    <body>
 
-<div class="container">
-    <header>
-        <h1>IMAGE UPSCALER</h1>
-        <p>Upscale, denoise and enhance your images in seconds</p>
-    </header>
+    <div class="container">
+        <header>
+            <h1>IMAGE COMPRESSOR</h1>
+            <p>Compress your images in seconds</p>
+        </header>
 
-    <div class="main-content">
-        <div class="left-content">
-            <div class="image-preview">
-                <!-- The first image in the filenames list will be shown initially -->
-                <img id="main-image" src="{{ url_for('static', filename='uploads/' + filenames[0]) }}" alt="Main Image">
+        <div class="main-content">
+            <div class="left-content">
+                <div class="image-preview">
+                    <!-- The first image in the filenames list will be shown initially -->
+                    <img id="main-image" src="{{ url_for('static', filename='uploads/' + filenames[0]) }}" alt="Main Image">
+                </div>
+
+                <!-- Thumbnails Container -->
+                <div class="thumbnails-container">
+                    {% for filename in filenames %}
+                        <img src="{{ url_for('static', filename='uploads/' + filename) }}" alt="Thumbnail" class="thumbnail" onclick="selectImage('{{ url_for('static', filename='uploads/' + filename) }}')">
+                    {% endfor %}
+                </div>
             </div>
-
-            <!-- Thumbnails Container -->
-            <div class="thumbnails-container">
-                {% for filename in filenames %}
-                    <img src="{{ url_for('static', filename='uploads/' + filename) }}" alt="Thumbnail" class="thumbnail" onclick="selectImage('{{ url_for('static', filename='uploads/' + filename) }}')">
-                {% endfor %}
-            </div>
-        </div>
-        
-        <!-- Right side: Settings Panels -->
-        <div class="settings-container">
-            <button class="download-all" onclick="downloadAll()">Download all</button>
-            <!-- Settings panel will go here -->
-            <div class="settings-panel">
-                <label for="format">Choose format</label>
-                <select class="format">
-                    <option value="png">PNG</option>
-                    <option value="jpeg">JPEG</option>
-                    <option value="webp">WEBP</option>
-                </select>
             
-                <input type="hidden" class="filename" name="filename" value="{{ url_for('static', filename='uploads/' + filenames[0]) }}">
+            <!-- Right side: Settings Panels -->
+            <div class="settings-container">
+                <button class="download-all" onclick="downloadAll()">Download all</button>
+                <!-- Settings panel will go here -->
+                <div class="settings-panel">
+                    <label for="format">Choose format</label>
+                    <select class="format">
+                        <option value="png">PNG</option>
+                        <option value="jpeg">JPEG</option>
+                        <option value="webp">WEBP</option>
+                    </select>
                 
-                <label for="compression">Compression level</label>
-                <input type="range" class="compression" min="0" max="100" value="50">
-                
-                <label for="size">Size</label>
-                <input type="number" class="size" name="size" value="128" min="0">
-                
-                <button class="download" onclick="downloadImage(this)">Download</button>
-                <button class="delete-panel" onclick="deletePanel(this)">Delete</button>
+                    <input type="hidden" class="filename" name="filename" value="{{ url_for('static', filename='uploads/' + filenames[0]) }}">
+                    
+                    <label for="size">Size</label>
+                    <input type="number" class="size" name="size" value="128" min="0" style="-moz-appearance: textfield;">                    
+                    <button class="download" onclick="downloadImage(this)">Download</button>
+                    <button class="delete-panel" onclick="deletePanel(this)">Delete</button>
+                </div>
+                <!-- Additional panels will be added here -->
+                <div class="add-panel" onclick="addPanel()">+</div>
             </div>
-            <!-- Additional panels will be added here -->
-            <div class="add-panel" onclick="addPanel()">+</div>
         </div>
     </div>
-</div>
 
-<script src="static/compressor_script.js"></script>
+    <script src="static/compressor_script.js"></script>
 
-</body>
-</html>
+    </body>
+    </html>
