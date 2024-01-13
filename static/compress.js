@@ -30,18 +30,18 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-async function downloadImage(buttonElement) {
+async function downloadOutput(buttonElement) {
     // Find the nearest parent settings panel
     var settingsPanel = buttonElement.closest('.settings-panel');
 
     // Extract values for format, size, and filename from the specific settings panel
     var format = settingsPanel.querySelector('.format').value;
     var size = settingsPanel.querySelector('.size').value;
-    var filename = settingsPanel.querySelector('.filename').value;
 
     // Prepare the data to be sent in the POST request
     var data = {
-        'filename': filename,
+        'type': 'single',
+        'filenames': filenames,
         'format': format,
         'size': size
     };
@@ -88,49 +88,51 @@ async function downloadImage(buttonElement) {
 async function downloadAll() {
     // Find all settings panels
     const settingsPanels = document.querySelectorAll('.settings-panel');
+    const outputs = []
 
     settingsPanels.forEach(async (panel) => {
         // Extract values for format, size, and filename from each settings panel
-        const format = panel.querySelector('.format').value;
-        const size = panel.querySelector('.size').value;
-        const filename = panel.querySelector('.filename').value;
-
-        // Prepare the data to be sent in the POST request
-        const data = {
-            'filename': filename,
-            'format': format,
-            'size': size
-        };
-
-        // Send the POST request to the Flask endpoint
-        try {
-            const response = await fetch('/compress', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
-            });
-
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
-            // Handle the response
-            const contentDisposition = response.headers.get('Content-Disposition');
-            if (contentDisposition && contentDisposition.indexOf('attachment') !== -1) {
-                // If the response is a file, handle the file download
-                const blob = await response.blob();
-                downloadBlob(blob, `downloaded-${size}.${format}`);
-            } else {
-                // If the response is JSON, handle accordingly
-                const responseData = await response.json();
-                console.log('Success:', responseData);
-            }
-        } catch (error) {
-            console.error('Error:', error);
-        }
+        outputs.push([panel.querySelector('.format').value, panel.querySelector('.size').value]);
     });
+
+    // Prepare the data to be sent in the POST request
+    const data = {
+        'type': 'all',
+        'filenames': filenames,
+        // 'formats': formats,
+        // 'sizes': sizes
+        'outputs': outputs
+    };
+
+    // Send the POST request to the Flask endpoint
+    try {
+        const response = await fetch('/compress', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        // Handle the response
+        const contentDisposition = response.headers.get('Content-Disposition');
+        if (contentDisposition && contentDisposition.indexOf('attachment') !== -1) {
+            // If the response is a file, handle the file download
+            const blob = await response.blob();
+            // downloadBlob(blob, `downloaded-${size}.${format}`);
+            downloadBlob(blob, `downloaded-archive.zip`);
+        } else {
+            // If the response is JSON, handle accordingly
+            const responseData = await response.json();
+            console.log('Success:', responseData);
+        }
+    } catch (error) {
+        console.error('Error:', error);
+    }
 }
 
 function selectImage(imagePath) {

@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, redirect, send_file, jsonify
 from werkzeug.utils import secure_filename
 from PIL import Image
 import os
-import shutil
+import tempfile
 import zipfile
 
 app = Flask(__name__)
@@ -59,22 +59,51 @@ def compress():
 
     if request.is_json:
         args = request.get_json()
-        filename = args.get('filename')
-        format = args.get('format')
-        limit = args.get('size')
 
+        if args.get('type') == 'single':
+            filenames = args.get('filenames')
+            format = args.get('format')
+            limit = args.get('size')
 
-        output_folder = os.path.join(app.config['UPLOAD_FOLDER'], format)
-        os.makedirs(output_folder, exist_ok=True)
+            # Create a temporary ZIP file
+            zip_filename = os.path.join(tempfile.gettempdir(), "compressed_images.zip")
+            with zipfile.ZipFile(zip_filename, 'w') as zipf:
+                for filename in filenames:
+                    output_folder = os.path.join(app.config['UPLOAD_FOLDER'], format)
+                    os.makedirs(output_folder, exist_ok=True)
+                    output_file = os.path.join(output_folder, f'{os.path.basename(filename).rsplit(".", 1)[0]}.{format}')
+                    filename = filename[1:].replace('/', '\\')
+                    compress_image(filename, output_file, max_size=int(limit))
+                    zipf.write(output_file, arcname=os.path.basename(output_file))
 
-        output_file = os.path.join(output_folder, f'{os.path.basename(filename).rsplit(".", 1)[0]}.{format}')
+        elif args.get('type') == 'all':
+            filenames = args.get('filenames')
+            outputs = args.get('outputs')
 
+            # Create a temporary ZIP file
+            zip_filename = os.path.join(tempfile.gettempdir(), "compressed_images.zip")
+            with zipfile.ZipFile(zip_filename, 'w') as zipf:
+                for filename in filenames:
+                    filename = filename.lstrip('/')
+                    for output in outputs:
+                        format = output[0]
+                        limit = int(output[1])
 
-        filename = filename[1:].replace('/', '\\')
-        compress_image(filename, output_file, max_size=int(limit))
-        # extension = filename.split('.')[-1]
+                        # The folder name in the ZIP will be based on the format
+                        folder_name = format
 
-        return send_file(output_file, as_attachment=True, mimetype=f'image/{format}')
+                        output_folder = os.path.join(app.config['UPLOAD_FOLDER'], format)
+                        os.makedirs(output_folder, exist_ok=True)
+
+                        output_file = os.path.join(output_folder, f'{os.path.basename(filename).rsplit(".", 1)[0]}.{format}')
+                        compress_image(filename, output_file, max_size=int(limit))
+                        
+                        # The path inside the ZIP includes the folder name
+                        inside_zip_path = os.path.join(folder_name, os.path.basename(output_file))
+                        zipf.write(output_file, arcname=inside_zip_path)
+
+        # return send_file(output_file, as_attachment=True, mimetype=f'image/{format}')
+        return send_file(zip_filename, as_attachment=True, mimetype=f'application/zip')
     else:
         return jsonify({'status': 'error', 'message': 'Invalid content type'}), 400
 
