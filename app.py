@@ -90,8 +90,8 @@ def upload():
             file.save(path)
             filenames.append(filename)
         else:
-            return "Invalid file format."
-    return render_template('compress.html', filenames=filenames)
+            return jsonify({'status': 'error', 'message': 'Invalid file format.'}), 400
+    return jsonify({'status': 'success', 'filenames': filenames})
 
 @app.route('/compress', methods=['POST'])
 def compress():
@@ -100,56 +100,62 @@ def compress():
         args = request.get_json()
         files_to_clean = []
 
-        # TODO: if "Download all, but the formats are same -> no inner folders"
-        # TODO: or dont use 'type', just always pass a list of outputs and make decisions based on content
-        if args.get('type') == 'single':
+        if args.get('type') == 'render':
             filenames = args.get('filenames')
-            format = args.get('format')
-            limit = args.get('size')
+            return render_template('compress.html', filenames=filenames)
+        else:
+            # TODO: if "Download all, but the formats are same -> no inner folders"
+            # TODO: or dont use 'type', just always pass a list of outputs and make decisions based on content
 
             # Create a temporary ZIP file
             zip_filename = os.path.join(tempfile.gettempdir(), "compressed_images.zip")
-            with zipfile.ZipFile(zip_filename, 'w') as zipf:
-                for filename in filenames:
-                    filename = filename.lstrip('/')
-                    output_file = os.path.join(app.config['UPLOAD_FOLDER'], f'{os.path.basename(filename).rsplit(".", 1)[0]}.{format}')
-                    compress_image(filename, output_file, target_size_kb=int(limit))
-                    zipf.write(output_file, arcname=os.path.basename(output_file))
-                    files_to_clean.append(output_file)
 
-        elif args.get('type') == 'all':
-            filenames = args.get('filenames')
-            outputs = args.get('outputs')
+            if args.get('type') == 'single':
+                filenames = args.get('filenames')
+                format = args.get('format')
+                limit = args.get('size')
 
-            # Create a temporary ZIP file
-            zip_filename = os.path.join(tempfile.gettempdir(), "compressed_images.zip")
-            with zipfile.ZipFile(zip_filename, 'w') as zipf:
-                for filename in filenames:
-                    filename = filename.lstrip('/')
-                    filename = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-                    for output in outputs:
-                        format = output[0]
-                        limit = int(output[1])
-
-                        # The folder name in the ZIP will be based on the format
-                        folder_name = format
-
+                with zipfile.ZipFile(zip_filename, 'w') as zipf:
+                    for filename in filenames:
+                        filename = filename.lstrip('/')
                         output_file = os.path.join(app.config['UPLOAD_FOLDER'], f'{os.path.basename(filename).rsplit(".", 1)[0]}.{format}')
                         compress_image(filename, output_file, target_size_kb=int(limit))
-                        
-                        # The path inside the ZIP includes the folder name
-                        inside_zip_path = os.path.join(folder_name, os.path.basename(output_file))
-                        zipf.write(output_file, arcname=inside_zip_path)
+                        zipf.write(output_file, arcname=os.path.basename(output_file))
                         files_to_clean.append(output_file)
+
+            elif args.get('type') == 'all':
+                filenames = args.get('filenames')
+                outputs = args.get('outputs')
+
+                with zipfile.ZipFile(zip_filename, 'w') as zipf:
+                    for filename in filenames:
+                        filename = filename.lstrip('/')
+                        filename = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+                        for output in outputs:
+                            format = output[0]
+                            limit = int(output[1])
+
+                            # The folder name in the ZIP will be based on the format
+                            folder_name = format
+
+                            output_file = os.path.join(app.config['UPLOAD_FOLDER'], f'{os.path.basename(filename).rsplit(".", 1)[0]}.{format}')
+                            compress_image(filename, output_file, target_size_kb=int(limit))
+                            
+                            # The path inside the ZIP includes the folder name
+                            inside_zip_path = os.path.join(folder_name, os.path.basename(output_file))
+                            zipf.write(output_file, arcname=inside_zip_path)
+                            files_to_clean.append(output_file)
+
+            return send_file(zip_filename, as_attachment=True, mimetype=f'application/zip')
 
         # TODO: Cleenup
         # for file_path in files_to_clean:
         #     if os.path.exists(file_path):
         #         os.remove(file_path)
         # return send_file(output_file, as_attachment=True, mimetype=f'image/{format}')
-        return send_file(zip_filename, as_attachment=True, mimetype=f'application/zip')
+        return jsonify({'status': 'success', 'message': 'Compress page rendered.'}), 200
     else:
-        return jsonify({'status': 'error', 'message': 'Invalid content type'}), 400
+        return jsonify({'status': 'error', 'message': 'Invalid content type.'}), 400
 
 if __name__ == '__main__':
     app.run(debug=True)

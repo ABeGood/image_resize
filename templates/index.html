@@ -15,15 +15,13 @@
             <p>Compress your images in seconds</p>
         </header>
         <div class="upload-box" id="upload-box">
-            <form action="/upload" method="post" enctype="multipart/form-data">
-                <div class="file-upload-container" id="file-upload-container">
-                    <i class="fa-solid fa-file-arrow-up fa-beat fa-2x"></i>
-                    <label for="file-upload" class="file-upload-label">Click, paste, or drop files here to start</label>
-                    <input type="file" id="file-upload" class="file-upload-input" name="file" multiple>
-                </div>
-                <div id="thumbnails-container"></div>
-                <button type="submit" id="upload-button" disabled>Upload</button>
-            </form>
+            <div class="file-upload-container" id="file-upload-container">
+                <i class="fa-solid fa-file-arrow-up fa-beat fa-2x"></i>
+                <label for="file-upload" class="file-upload-label">Click, paste, or drop files here to start</label>
+                <input type="file" id="file-upload" class="file-upload-input" name="file" multiple>
+            </div>
+            <div id="thumbnails-container"></div>
+            <button id="upload-button" disabled>Upload</button>
         </div>
     </div>
 

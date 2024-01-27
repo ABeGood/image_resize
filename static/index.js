@@ -1,4 +1,3 @@
-
 document.addEventListener('DOMContentLoaded', () => {
     const uploadButton = document.getElementById('upload-button');
     const fileUploadContainer = document.getElementById('file-upload-container');
@@ -6,6 +5,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const uploadBox = document.getElementById('upload-box');
     const fileUploadInput = document.getElementById('file-upload');
 
+    uploadButton.addEventListener('click', () => {
+        if (filesToUpload.length === 0) {
+            alert('Please select files to upload.');
+            return;
+        }
+        uploadFiles(filesToUpload); // Send the filesToUpload list to the backend
+        uploadButton.disabled = true;
+    });
 
     fileUploadInput.addEventListener('change', () => {
         handleFiles(fileUploadInput.files);
@@ -104,7 +111,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const formData = new FormData();
 
         for (let i = 0; i < files.length; i++) {
-            formData.append('files[]', files[i], files[i].name);
+            formData.append('file', files[i]);
         }
 
         fetch('/upload', {
@@ -115,6 +122,27 @@ document.addEventListener('DOMContentLoaded', () => {
             .then(data => {
                 // Handle the response from the server
                 console.log('Upload successful', data);
+
+                const uploadedFiles = data.filenames;
+                fetch('/compress', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({'filenames': uploadedFiles, 'type':'render'}),
+                })
+                .then(response => response.text())  // Parse response as text
+                .then(html => {
+                    // Insert the HTML content into the DOM
+                    const newWindow = window.open();
+                    newWindow.document.open();
+                    newWindow.document.write(html);
+                    newWindow.document.close();
+                })
+                .catch(error => {
+                    // Handle errors for the `/compress` request
+                    console.error('Error during rendering compress page.', error);
+                });
             })
             .catch(error => {
                 // Handle errors
@@ -122,16 +150,16 @@ document.addEventListener('DOMContentLoaded', () => {
             });
     }
 
-    // Event listener for form submission
-    document.querySelector('form').addEventListener('submit', function(event) {
-        if (filesToUpload.files.length === 0) {
-            event.preventDefault(); // Prevent form submission
-            alert('Please select files to upload.');
-            return false;
-        }
-        uploadFiles(filesToUpload);
-        uploadButton.disabled = true;
-    });
+    // // Event listener for form submission
+    // document.querySelector('form').addEventListener('submit', function(event) {
+    //     event.preventDefault(); // Prevent form submission
+    //     if (filesToUpload.length === 0) {
+    //         alert('Please select files to upload.');
+    //         return false;
+    //     }
+    //     uploadFiles(filesToUpload);
+    //     uploadButton.disabled = true;
+    // });
 });
 
 let filesToUpload = [];
