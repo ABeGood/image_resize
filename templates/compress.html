@@ -32,8 +32,8 @@
 
             <div id ="settings-panel-template" style="display: none;">
                 <!-- Your settings panel structure here -->
-                <label for="format">Choose format</label>
-                <select class="format">
+                <label for="format_in_template">Choose format</label>
+                <select class="format" id="format_in_template">
                     <option value="png">PNG</option>
                     <option value="jpeg">JPEG</option>
                     <option value="webp">WEBP</option>
@@ -41,8 +41,8 @@
 
                 <input type="hidden" class="filename" name="filename" value="{{ url_for('static', filename=filenames) }}">
                 
-                <label for="size">Size</label>
-                <input type="number" class="size" name="size" value="128" min="0" style="-moz-appearance: textfield;">                    
+                <label for="size_in_template">Size</label>
+                <input type="number" class="size" name="size" id="size_in_template" value="128" min="0" style="-moz-appearance: textfield;">                    
                 <button class="download" onclick="downloadOutput(this)">Download output</button>
                 <button class="delete-panel" onclick="deletePanel(this)">Delete</button>
             </div>
@@ -53,7 +53,7 @@
                 <!-- Settings panel will go here -->
                 <div class="settings-panel">
                     <label for="format">Choose format</label>
-                    <select class="format">
+                    <select class="format" id="format">
                         <option value="png">PNG</option>
                         <option value="jpeg">JPEG</option>
                         <option value="webp">WEBP</option>
@@ -62,7 +62,7 @@
                     <input type="hidden" class="filename" name="filename" value="{{ url_for('static', filename=filenames) }}">
                     
                     <label for="size">Size</label>
-                    <input type="number" class="size" name="size" value="128" min="0" style="-moz-appearance: textfield;">                    
+                    <input type="number" class="size" name="size" id="size" value="128" min="0" style="-moz-appearance: textfield;">                    
                     <button class="download" onclick="downloadOutput(this)">Download output</button>
                     <button class="delete-panel" onclick="deletePanel(this)">Delete</button>
                 </div>
