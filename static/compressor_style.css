@@ -1,11 +1,23 @@
 body, html {
     height: 100%;
     margin: 0;
-    font-family: Arial, sans-serif;
+    font-family: 'SF Pro', 'Helvetica Neue', Arial, sans-serif; /* Перечислите нужные вам шрифты в порядке приоритета */
     background-color: #121212;
     color: white;
 }
+@font-face {
+    font-family: 'SF Pro';
+    src: url('https://fonts.cdnfonts.com/css/sf-pro-display') format('truetype'); /* Укажите прямую ссылку на Regular шрифт */
+    font-weight: normal;
+    font-style: normal;
+}
 
+@font-face {
+    font-family: 'SF Pro';
+    src: url('https://fonts.cdnfonts.com/css/sf-pro-display') format('truetype'); /* Укажите прямую ссылку на Bold шрифт */
+    font-weight: bold;
+    font-style: normal;
+}
 .container {
     display: flex;
     flex-direction: column;
@@ -112,7 +124,7 @@ header p {
     height: 600px; /* Set the height of the image preview area */
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
 }
 
 .image-preview img {

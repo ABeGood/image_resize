@@ -3,7 +3,7 @@ body, html {
     margin: 0;
     padding: 0;
     background-color: #000;
-    color: #fff;
+    color: #ffffff;
     font-family: 'Arial', sans-serif;
 }
 
@@ -13,21 +13,22 @@ body, html {
 }
 
 header h1 {
-    font-size: 2.5em;
     margin: 0;
+    font-size: 4em;
+    text-align: center;
 }
 
 header p {
-    font-size: 1em;
-    margin: 10px 0;
+    margin: 10px 0 0px;
+    color: #aaa;
+    text-align: center;
+    font-size: 1.5em;
 }
 
 .upload-box {
-    background-color: #222;
     padding: 40px;
     border-radius: 8px;
     display: inline-block;
-    margin-top: 20px;
 }
 
 .upload-box p {
@@ -121,4 +122,67 @@ button:disabled {
     font-size: 24px;
     color: red;
     cursor: pointer;
+}
+
+/* Медиа-запросы для различных размеров экрана */
+@media (max-width: 1024px) {
+    .file-upload-container, button {
+        width: 100%; /* Изменяем ширину на более узкую на больших экранах */
+    }
+    header h1 {
+        font-size: 3.5em; /* Уменьшаем размер шрифта для экранов шириной до 1024px */
+    }
+
+    header p {
+        font-size: 1.4em; /* Уменьшаем размер шрифта для экранов шириной до 1024px */
+    }
+    .file-upload-label {
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 800px) {
+    .file-upload-container, button {
+        width: 100%; /* Изменяем ширину на 100% на средних экранах */
+    }
+
+    #preview-container img, .thumbnail {
+        max-width: 60px; /* Уменьшил размер изображений для средних экранов */
+        max-height: 60px;
+    }
+    header h1 {
+        font-size: 2.5em; /* Уменьшаем размер шрифта для меньших экранов */
+    }
+
+    header p {
+        font-size: 1.2em; /* Уменьшаем размер шрифта для меньших экранов */
+    }
+    .file-upload-label {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 420px) {
+    header h1 {
+        font-size: 2em; /* Уменьшаем размер шрифта для экранов шириной до 420px */
+    }
+
+    header p {
+        font-size: 0.9em; /* Уменьшаем размер шрифта для экранов шириной до 420px */
+    }
+    
+    .file-upload-container, button {
+        width: 100%; /* Изменяем ширину на 100% на маленьких экранах */
+    }
+
+    #preview-container img, .thumbnail {
+        max-width: 20px; /* Уменьшил размер изображений для маленьких экранов */
+        max-height: 20px;
+    }
+    .upload-box {
+    max-width: 100%;
+    }
+    .file-upload-label {
+        font-size: 12px;
+    }
 }
