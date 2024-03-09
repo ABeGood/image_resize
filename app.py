@@ -155,7 +155,7 @@ def compress():
                             # The folder name in the ZIP will be based on the format
                             folder_name = format
 
-                            output_file = os.path.join(UPLOAD_FOLDER, f'{os.path.basename(filename).rsplit(".", 1)[0]}.{format}')
+                            # output_file = os.path.join(UPLOAD_FOLDER, f'{os.path.basename(filename).rsplit(".", 1)[0]}.{format}')
                             output_file = ''.join([UPLOAD_FOLDER, '/', f'{os.path.basename(filename).rsplit(".", 1)[0]}.{format}'])
 
                             compress_image(filename, output_file, target_size_kb=int(limit))
