@@ -114,6 +114,8 @@ document.addEventListener('DOMContentLoaded', () => {
             formData.append('file', files[i]);
         }
 
+        // alert('FormData: {formData}')
+
         fetch('/upload', {
             method: 'POST',
             body: formData,
@@ -134,10 +136,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 .then(response => response.text())  // Parse response as text
                 .then(html => {
                     // Insert the HTML content into the DOM
-                    const newWindow = window.open();
-                    newWindow.document.open();
-                    newWindow.document.write(html);
-                    newWindow.document.close();
+                    document.open();
+                    document.write(html);
+                    document.close();
                 })
                 .catch(error => {
                     // Handle errors for the `/compress` request

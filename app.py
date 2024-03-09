@@ -9,7 +9,6 @@ import io
 app = Flask(__name__)
 
 UPLOAD_FOLDER = 'static/uploads'
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'webp'}
 
@@ -80,18 +79,36 @@ def upload():
     print(request.files)  # Debug statement
     print(request.files.keys())   # Additional debug for form data
     uploaded_files = request.files.getlist('file')
+    print
     filenames = []
     for file in uploaded_files:
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             filename = filename.replace(' ', '_')
-            path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            # path = os.path.join(UPLOAD_FOLDER, filename)
+            path = ''.join([UPLOAD_FOLDER, '/', filename])
             print(path)
             file.save(path)
             filenames.append(filename)
         else:
             return jsonify({'status': 'error', 'message': 'Invalid file format.'}), 400
     return jsonify({'status': 'success', 'filenames': filenames})
+
+# @app.route('/upload', methods=['POST'])
+# def upload():
+#     if 'file' not in request.files:
+#         return redirect(request.url)
+#     file = request.files['file']
+#     if file.filename == '':
+#         return redirect(request.url)
+#     if file and allowed_file(file.filename):
+#         # filename = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
+#         filename = ''.join([UPLOAD_FOLDER, '/', file.filename])
+#         file.save(filename)
+#         filenames.append(filename)
+#         return render_template('compress.html', filenames=filenames)
+#     else:
+#         return "Invalid file format."
 
 @app.route('/compress', methods=['POST'])
 def compress():
@@ -118,7 +135,7 @@ def compress():
                 with zipfile.ZipFile(zip_filename, 'w') as zipf:
                     for filename in filenames:
                         filename = filename.lstrip('/')
-                        output_file = os.path.join(app.config['UPLOAD_FOLDER'], f'{os.path.basename(filename).rsplit(".", 1)[0]}.{format}')
+                        output_file = os.path.join(UPLOAD_FOLDER, f'{os.path.basename(filename).rsplit(".", 1)[0]}.{format}')
                         compress_image(filename, output_file, target_size_kb=int(limit))
                         zipf.write(output_file, arcname=os.path.basename(output_file))
                         files_to_clean.append(output_file)
@@ -130,7 +147,7 @@ def compress():
                 with zipfile.ZipFile(zip_filename, 'w') as zipf:
                     for filename in filenames:
                         filename = filename.lstrip('/')
-                        filename = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+                        filename = os.path.join(UPLOAD_FOLDER, filename)
                         for output in outputs:
                             format = output[0]
                             limit = int(output[1])
@@ -138,7 +155,7 @@ def compress():
                             # The folder name in the ZIP will be based on the format
                             folder_name = format
 
-                            output_file = os.path.join(app.config['UPLOAD_FOLDER'], f'{os.path.basename(filename).rsplit(".", 1)[0]}.{format}')
+                            output_file = os.path.join(UPLOAD_FOLDER, f'{os.path.basename(filename).rsplit(".", 1)[0]}.{format}')
                             compress_image(filename, output_file, target_size_kb=int(limit))
                             
                             # The path inside the ZIP includes the folder name
