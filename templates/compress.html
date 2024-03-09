@@ -25,6 +25,7 @@
                 <div class="thumbnails-container">
                     {% for filename in filenames %}
                         <img src="{{ url_for('static', filename='uploads/' + filename) }}" alt="Thumbnail" class="thumbnail" onclick="selectImage('{{ url_for('static', filename='uploads/' + filename) }}')">
+                        <div class="thumbnail-name">{{ filename }}</div>
                     {% endfor %}
                 </div>
             </div>
