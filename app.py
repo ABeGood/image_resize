@@ -147,7 +147,7 @@ def compress():
                 with zipfile.ZipFile(zip_filename, 'w') as zipf:
                     for filename in filenames:
                         filename = filename.lstrip('/')
-                        filename = os.path.join(UPLOAD_FOLDER, filename)
+                        # filename = os.path.join(UPLOAD_FOLDER, filename)
                         for output in outputs:
                             format = output[0]
                             limit = int(output[1])
@@ -155,13 +155,13 @@ def compress():
                             # The folder name in the ZIP will be based on the format
                             folder_name = format
 
-                            # output_file = os.path.join(UPLOAD_FOLDER, f'{os.path.basename(filename).rsplit(".", 1)[0]}.{format}')
-                            output_file = ''.join([UPLOAD_FOLDER, '/', f'{os.path.basename(filename).rsplit(".", 1)[0]}.{format}'])
+                            output_file = os.path.join(UPLOAD_FOLDER, f'{os.path.basename(filename).rsplit(".", 1)[0]}.{format}')
+                            # output_file = ''.join([UPLOAD_FOLDER, '/', f'{os.path.basename(filename).rsplit(".", 1)[0]}.{format}'])
 
                             compress_image(filename, output_file, target_size_kb=int(limit))
                             
                             # The path inside the ZIP includes the folder name
-                            inside_zip_path = os.path.join(folder_name, os.path.basename(output_file))
+                            inside_zip_path = ''.join([folder_name, '/', os.path.basename(output_file)])
                             zipf.write(output_file, arcname=inside_zip_path)
                             files_to_clean.append(output_file)
 
