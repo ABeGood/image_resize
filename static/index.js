@@ -1,21 +1,22 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const uploadButton = document.getElementById('upload-button');
-    const fileUploadContainer = document.getElementById('file-upload-container');
-    const thumbnailsContainer = document.getElementById('thumbnails-container');
-    const uploadBox = document.getElementById('upload-box');
-    const fileUploadInput = document.getElementById('file-upload');
+let filesToUpload = [];
 
-    uploadButton.addEventListener('click', () => {
-        if (filesToUpload.length === 0) {
-            alert('Please select files to upload.');
-            return;
-        }
-        uploadFiles(filesToUpload); // Send the filesToUpload list to the backend
-        uploadButton.disabled = true;
-    });
+document.addEventListener('DOMContentLoaded', () => {
+    const fileUploadContainer   = document.getElementById('file-upload-container');
+    const thumbnailsContainer   = document.getElementById('thumbnails-container');
+    const uploadBox             = document.getElementById('upload-box');
+    const fileUploadInput       = document.getElementById('file-upload');
+    const imagePreview          = document.getElementById('main-image'); // Get the image preview element
+    
+
+ 
+        // uploadFiles(filesToUpload); // Send the filesToUpload list to the backend
+        // receiveFiles(fileUploadInput.files);
+        // refresh_preview()
+
 
     fileUploadInput.addEventListener('change', () => {
-        handleFiles(fileUploadInput.files);
+        receiveFiles(fileUploadInput.files);
+        refresh_preview()
     });
 
     uploadBox.addEventListener('dragover', (event) => {
@@ -30,7 +31,8 @@ document.addEventListener('DOMContentLoaded', () => {
     uploadBox.addEventListener('drop', (event) => {
         event.preventDefault();
         fileUploadContainer.classList.remove('dragover');
-        handleFiles(event.dataTransfer.files);
+        receiveFiles(event.dataTransfer.files);
+        refresh_preview()
     });
 
     fileUploadContainer.addEventListener('click', (event) => {
@@ -52,16 +54,29 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
         }
-        handleFiles(validFiles);
+        receiveFiles(validFiles);
+        refresh_preview()
     });
 
-    function handleFiles(files) {
-        thumbnailsContainer.innerHTML = '';
 
+    function receiveFiles(files)
+    {
         for (let i = 0; i < files.length; i++) {
             const file = files[i];
             filesToUpload.push(file);
         }
+
+        uploadFiles(filesToUpload);
+    }
+
+    function changeImagePreview(file) {
+        const imageUrl = URL.createObjectURL(file);
+        imagePreview.src = imageUrl;
+        imagePreview.alt = "Uploaded Image Preview";
+    }
+
+    function refresh_preview() {
+        thumbnailsContainer.innerHTML = '';
 
         for (let i = 0; i < filesToUpload.length; i++) {
             const file = filesToUpload[i];
@@ -70,44 +85,60 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // AG: can do a lot of stuf here
         if (filesToUpload.length > 0) {
-            uploadButton.disabled = false;
             console.log('Files selected, button enabled');
+            
+            // Update the image preview with the first uploaded image
+            console.log('Frst file is present: ' + filesToUpload[0]);
+            const imageUrl = URL.createObjectURL(filesToUpload[0]);
+            imagePreview.src = imageUrl;
+            imagePreview.alt = "Uploaded Image Preview";
+
         } else {
-            uploadButton.disabled = true;
             console.log('No files selected, button disabled');
+
+            console.log('Clear preview');
+                imagePreview.src = '';
+                imagePreview.alt = '';
         }
     }
 
     function removeFile(fileToRemove) {
         filesToUpload = filesToUpload.filter(file => file !== fileToRemove);
-        if (filesToUpload.length > 0) {
-            uploadButton.disabled = false;
-            console.log('Files selected, button enabled');
-        } else {
-            uploadButton.disabled = true;
-            console.log('No files selected, button disabled');
-        }
     }
 
     function addThumbnail(file) {
         const container = document.createElement('div');
-        container.classList.add('thumbnail-container');
+        container.classList.add('thumbnails-container');
     
         const thumbnail = document.createElement('img');
         thumbnail.classList.add('thumbnail');
         thumbnail.src = URL.createObjectURL(file); // Setting the source of the image
+        thumbnail.addEventListener('click', () => {
+            changeImagePreview(file);
+        });
+    
+        // Add red cross icon
+        const closeButton = document.createElement('i');
+        closeButton.classList.add('fas', 'fa-times', 'close-icon');
+        closeButton.addEventListener('click', () => {
+            removeThumbnail(container, file);
+        });
     
         container.appendChild(thumbnail);
-    
-        container.addEventListener('click', () => {
-            removeFile(file);
-            container.remove(); // Remove the thumbnail container
-        });
+        container.appendChild(closeButton);
     
         thumbnailsContainer.appendChild(container);
     }
 
+    function removeThumbnail(container, file) {
+        container.remove(); // Remove the thumbnail container
+        removeFile(file);
+        refresh_preview();
+    }
+
     function uploadFiles(files) {
+        console.log('Upload files')
+
         const formData = new FormData();
 
         for (let i = 0; i < files.length; i++) {
@@ -124,49 +155,134 @@ document.addEventListener('DOMContentLoaded', () => {
             .then(data => {
                 // Handle the response from the server
                 console.log('Upload successful', data);
-
-                const uploadedFiles = data.filenames;
-                fetch('/compress', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({'filenames': uploadedFiles, 'type':'render'}),
-                })
-                .then(response => response.text())  // Parse response as text
-                .then(html => {
-                    // Insert the HTML content into the DOM
-                    document.open();
-                    document.write(html);
-                    document.close();
-                })
-                .catch(error => {
-                    // Handle errors for the `/compress` request
-                    console.error('Error during rendering compress page.', error);
-                });
             })
             .catch(error => {
                 // Handle errors
                 console.error('Error during upload', error);
             });
     }
-
-    // // Event listener for form submission
-    // document.querySelector('form').addEventListener('submit', function(event) {
-    //     event.preventDefault(); // Prevent form submission
-    //     if (filesToUpload.length === 0) {
-    //         alert('Please select files to upload.');
-    //         return false;
-    //     }
-    //     uploadFiles(filesToUpload);
-    //     uploadButton.disabled = true;
-    // });
 });
 
-let filesToUpload = [];
 
-function addPanel() {
-    var panels = document.getElementById('panels');
-    var newPanel = panels.firstElementChild.cloneNode(true);
-    panels.appendChild(newPanel);
-  }
+async function downloadOutput(buttonElement) {
+    // Find the nearest parent settings panel
+    var settingsPanel = buttonElement.closest('.settings-panel');
+
+    // Extract values for format, size, and filename from the specific settings panel
+    var format = settingsPanel.querySelector('.format').value;
+    var size = settingsPanel.querySelector('.size').value;
+
+    console.log('Files to upload: ' + filesToUpload.length)
+
+    // Prepare the data to be sent in the POST request
+    var data = {
+        'type': 'single',
+        'filenames': filesToUpload.map(file => file.name),
+        'format': format,
+        'size': size
+    };
+
+    // Send the POST request to the Flask endpoint
+    try {
+        const response = await fetch('/compress', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        // Check if the response is JSON or an image
+        const contentDisposition = response.headers.get('Content-Disposition');
+        if (contentDisposition && contentDisposition.indexOf('attachment') !== -1) {
+            // Handle image file response
+            response.blob().then(blob => {
+                // Create a URL for the blob
+                const url = window.URL.createObjectURL(blob);
+                // Create a link and set the URL as the href
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'downloaded-image'; // Set a filename for the download
+                document.body.appendChild(a);
+                a.click(); // Trigger the download
+                window.URL.revokeObjectURL(url); // Clean up
+            });
+        } else {
+            // Handle JSON response
+            const data = await response.json();
+            console.log('Success:', data);
+        }
+    } catch (error) {
+        console.error('Error:', error);
+    }
+}
+
+async function downloadAll() {
+    // Find all settings panels
+    const settingsPanels = document.querySelectorAll('.settings-panel');
+
+    if (settingsPanels.length === 0) {
+        alert('No outputs to process.');
+        return;
+    }
+
+    const outputs = []
+
+    settingsPanels.forEach(async (panel) => {
+        // Extract values for format, size, and filename from each settings panel
+        outputs.push([panel.querySelector('.format').value, panel.querySelector('.size').value]);
+    });
+
+    // Prepare the data to be sent in the POST request
+    const data = {
+        'type': 'all',
+        'filenames': filesToUpload.map(file => file.name),
+        // 'formats': formats,
+        // 'sizes': sizes
+        'outputs': outputs
+    };
+
+    // Send the POST request to the Flask endpoint
+    try {
+        const response = await fetch('/compress', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        // Handle the response
+        const contentDisposition = response.headers.get('Content-Disposition');
+        if (contentDisposition && contentDisposition.indexOf('attachment') !== -1) {
+            // If the response is a file, handle the file download
+            const blob = await response.blob();
+            // downloadBlob(blob, `downloaded-${size}.${format}`);
+            downloadBlob(blob, `downloaded-archive.zip`);
+        } else {
+            // If the response is JSON, handle accordingly
+            const responseData = await response.json();
+            console.log('Success:', responseData);
+        }
+    } catch (error) {
+        console.error('Error:', error);
+    }
+}
+
+function downloadBlob(blob, filename) {
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
+}
