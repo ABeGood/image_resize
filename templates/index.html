@@ -25,28 +25,10 @@
         </header>
 
         <div class="main-content">
-            <div class="left-content">
-
-                <div class="image-preview">
-                    {% if filenames and filenames[0] %}
-                        <!-- Declare the image element with id main-image and set src -->
-                        <img id="main-image" src="{{ url_for('static', filename='uploads/' + filenames[0]) }}" alt="Main Image">
-                    {% else %}
-                        <!-- Declare the image element with id main-image without src -->
-                        <img id="main-image" alt="Main Image">
-                    {% endif %}
-                </div>
-
+            <div class="left-content" id="left-content">
                 <!-- Thumbnails Container -->
-                <div class="thumbnails-container" id="thumbnails-container">
-                    {% for filename in filenames %}
-                        <img src="{{ url_for('static', filename='uploads/' + filename) }}" alt="Thumbnail" class="thumbnail" onclick="selectImage('{{ url_for('static', filename='uploads/' + filename) }}')">
-                        <!--div class="thumbnail-name">{{ filename }}</div-->
-                    {% endfor %}
-                </div>
-
-                <div class="upload-container">
-
+                <div class="thumbnails-container" id="thumbnails-container"></div>
+                <div class="upload-container" id="upload-container">
                     <div class="upload-box" id="upload-box">
                         <div class="file-upload-container" id="file-upload-container">
                             <i class="fa-solid fa-file-arrow-up fa-beat fa-2x"></i>

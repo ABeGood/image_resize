@@ -1,17 +1,16 @@
 let filesToUpload = [];
 
 document.addEventListener('DOMContentLoaded', () => {
+    const leftContent           = document.getElementById('left-content');
+    const uploadContainer       = document.getElementById('upload-container');
     const fileUploadContainer   = document.getElementById('file-upload-container');
     const thumbnailsContainer   = document.getElementById('thumbnails-container');
     const uploadBox             = document.getElementById('upload-box');
     const fileUploadInput       = document.getElementById('file-upload');
-    const imagePreview          = document.getElementById('main-image'); // Get the image preview element
-    
 
- 
-        // uploadFiles(filesToUpload); // Send the filesToUpload list to the backend
-        // receiveFiles(fileUploadInput.files);
-        // refresh_preview()
+    // uploadFiles(filesToUpload); // Send the filesToUpload list to the backend
+    // receiveFiles(fileUploadInput.files);
+    // refresh_preview()
 
 
     fileUploadInput.addEventListener('change', () => {
@@ -69,36 +68,35 @@ document.addEventListener('DOMContentLoaded', () => {
         uploadFiles(filesToUpload);
     }
 
-    function changeImagePreview(file) {
-        const imageUrl = URL.createObjectURL(file);
-        imagePreview.src = imageUrl;
-        imagePreview.alt = "Uploaded Image Preview";
-    }
 
     function refresh_preview() {
         thumbnailsContainer.innerHTML = '';
 
-        for (let i = 0; i < filesToUpload.length; i++) {
-            const file = filesToUpload[i];
-            addThumbnail(file);
-        }
-
         // AG: can do a lot of stuf here
-        if (filesToUpload.length > 0) {
-            console.log('Files selected, button enabled');
-            
-            // Update the image preview with the first uploaded image
-            console.log('Frst file is present: ' + filesToUpload[0]);
-            const imageUrl = URL.createObjectURL(filesToUpload[0]);
-            imagePreview.src = imageUrl;
-            imagePreview.alt = "Uploaded Image Preview";
+        if (filesToUpload.length > 0) {            
+            document.getElementById('thumbnails-container').style.display = 'flex';
+
+            for (let i = 0; i < filesToUpload.length; i++) {
+                const file = filesToUpload[i];
+                addThumbnail(file);
+            }
+
+            console.log('BEFORE APPEND CHILD')
+            if (leftContent && uploadContainer) {
+                console.log('APPEND CHILD')
+                leftContent.appendChild(uploadContainer);
+            }
 
         } else {
-            console.log('No files selected, button disabled');
+            console.log('BEFORE FIRST CHILD')
+            if (leftContent && uploadContainer && leftContent.firstChild) {
+                console.log('FIRST CHILD')
+                leftContent.insertBefore(uploadContainer, leftContent.firstChild);
+            } else if (leftContent && uploadContainer) {
+                leftContent.appendChild(uploadContainer);
+            }
 
-            console.log('Clear preview');
-                imagePreview.src = '';
-                imagePreview.alt = '';
+            document.getElementById('thumbnails-container').style.display = 'none';
         }
     }
 
@@ -108,7 +106,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function addThumbnail(file) {
         const container = document.createElement('div');
-        container.classList.add('thumbnails-container');
     
         const thumbnail = document.createElement('img');
         thumbnail.classList.add('thumbnail');
@@ -285,4 +282,30 @@ function downloadBlob(blob, filename) {
     document.body.appendChild(a);
     a.click();
     window.URL.revokeObjectURL(url);
+}
+
+function addPanel() {
+    var settingsContainer = document.querySelector('.settings-container');
+    var addButton = document.querySelector('.add-panel');
+    
+    // Use the hidden settings panel template for cloning
+    var panelTemplate = document.getElementById('settings-panel-template');
+    var newPanel = panelTemplate.cloneNode(true);
+
+    // Remove the ID and make the panel visible
+    newPanel.id = '';
+    newPanel.style.display = '';
+    newPanel.className = 'settings-panel';
+
+    // Set up the delete button event handler in the cloned panel
+    newPanel.querySelector('.delete-panel').onclick = function() { deletePanel(this); };
+
+    settingsContainer.insertBefore(newPanel, addButton);
+}
+
+
+function deletePanel(button) {
+    var settingsContainer = document.querySelector('.settings-container');
+    var panelToRemove = button.closest('.settings-panel');
+    settingsContainer.removeChild(panelToRemove);
 }
