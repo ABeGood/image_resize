@@ -286,3 +286,7 @@ function downloadBlob(blob, filename) {
     a.click();
     window.URL.revokeObjectURL(url);
 }
+function deletePanel(element) {
+    var panel = element.closest('.format-panel');
+    panel.remove();
+}

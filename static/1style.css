@@ -1,0 +1,232 @@
+/* Общие стили */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Axiforma', sans-serif;
+    background-color: #131313; /* Цвет фона */
+    color: #fff; /* Цвет текста */
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+}
+
+nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+nav ul li {
+    display: inline-block;
+    margin-right: 60px; /* Отступ между ссылками */
+}
+
+nav ul li:last-child {
+    margin-right: 0; /* Убираем отступ справа у последней ссылки */
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: #CFCFCF; /* Цвет текста ссылок */
+}
+
+.login-btn button {
+    background-color: #7943D2;
+    color: #fff;
+    border: none;
+    padding: 10px 60px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+/* Логотип и приветственный текст */
+.logo {
+    display: flex;
+    align-items: center;
+}
+
+.logo img {
+    width: 150px; /* Настройте размер логотипа по вашему усмотрению */
+}
+
+.logo p {
+    margin-left: 10px;
+}
+
+/* Подсветка при наведении на ссылки */
+nav ul li a:hover {
+    color: #b0e73b;
+}
+
+.content {
+    margin: 80px 0;
+    text-align: center;
+}
+
+.app_logo img {
+    width: 400px; /* Размер нового логотипа */
+    margin-bottom: 10px;
+}
+
+.app_logo p {
+    font-family: 'Axiforma', sans-serif; /* Замените 'Your_Font_Name' на название вашего шрифта */
+    color: #969696; /* Замените #ffffff на цвет вашего выбора */
+    font-size: 14px; /* Размер шрифта */
+    margin-top: 0px; /* Верхний отступ */
+}
+
+/* CSS для стилизации загрузочного блока */
+.file-upload-container {
+    width: 600px;
+    height: 300px;
+    background-color: #0E0E0E;
+    border: 2px dashed #ccc;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    border-radius: 10px;
+    margin-left: 30px; /* Добавляем отступ справа */
+    margin-top: 50px;
+    float: left; /* Левое выравнивание */
+}
+
+.file-upload-label {
+    font-size: 18px;
+    margin-top: 20px;
+    display: inline-block;
+    color: #585b60;
+    padding: 10px 20px;
+    margin: 10px 0;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.file-upload-input {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.format-panel {
+    background-color: #000;
+    width: 300px;
+    float: right;
+    margin-top: 50px;
+    padding: 10px;
+    border-radius: 8px;
+    display: flex; /* Добавляем flex-контейнер */
+    flex-direction: column; /* Располагаем элементы в столбик */
+}
+
+.option-container {
+    display: flex;
+    padding: 10px;
+}
+
+.option-group {
+    display: flex;
+    flex-direction: column; /* Размещаем блоки в столбец */
+    width: 70%; /* Задаем ширину блока с опциями */
+}
+
+.option {
+    border-radius: 5px;
+    padding: 10px;
+    padding-right: 0;
+    margin-bottom: 10px;
+    display: flex; /* Добавляем flex-контейнер */
+    flex-direction: column; /* Располагаем элементы в столбик */
+}
+
+.save {
+    margin-top: 10px;
+}
+
+.option label {
+    color: #ffffff;
+    font-weight: bold;
+    margin-bottom: 5px; /* Добавляем небольшой отступ между меткой и выпадающим списком */
+    text-align: left;
+}
+
+.option input[type="number"] {
+    background-color: #202020;
+    border: 1px solid #3B3B3B;
+    border-radius: 5px;
+    color: #898989;
+    padding: 8px;
+    width: 100px;
+}
+
+.format-selector {
+    appearance: none;
+    background-color: #202020;
+    border: 1px solid #3B3B3B;
+    border-radius: 5px;
+    color: #FFFFFF;
+    padding: 8px;
+    width: 150px;
+    margin-right: 10px; /* Отступ между выбором формата и кнопкой скачивания */
+}
+
+.format-selector option {
+    background-color: #202020;
+    color: #FFFFFF;
+    font-weight: bold;
+}
+
+.option-size {
+    display: flex; /* Размещаем элементы внутри блока в один ряд */
+    align-items: flex-start; /* Изменено на flex-start */
+}
+
+.option-size input,
+.option-size select {
+    margin-right: 10px; /* Добавляем отступ между элементами */
+    padding: 8px;
+    background-color: #202020;
+    border: 1px solid #3B3B3B;
+    border-radius: 5px;
+    color: #FFFFFF;
+}
+
+.option-size select {
+    appearance: none; /* Убираем стандартные стили элемента select */
+    width: 50px; /* Установим фиксированную ширину для элемента select */
+}
+
+.option-size select option {
+    background-color: #202020;
+    color: #FFFFFF;
+    font-weight: bold;
+}
+
+.download {
+    border: none;
+    background: none;
+    padding: 0;
+    cursor: pointer;
+    align-self: flex-start; /* Добавлено выравнивание по верхнему краю */
+}
+
+.additional-container {
+    width: calc(50% - 20px); /* Устанавливаем ширину в половину контейнера и вычитаем отступы */
+    float: left; /* Левое выравнивание */
+    margin-right: 20px; /* Отступ справа */
+}

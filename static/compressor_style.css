@@ -2,7 +2,7 @@ body, html {
     height: 100%;
     margin: 0;
     font-family: 'SF Pro', 'Helvetica Neue', Arial, sans-serif; /* Перечислите нужные вам шрифты в порядке приоритета */
-    background-color: #121212;
+    background-color: #131313;
     color: white;
 }
 @font-face {
@@ -544,3 +544,84 @@ button:hover {
     }
 }
 
+.panel {
+    border-radius: var(--x2, 8px);
+    border: 1px solid rgba(37, 37, 37, 0.62);
+    background-color: #1c1c1c;
+    margin-top: 12px;
+    padding: 13px 24px 24px;
+}
+
+.column {
+    display: flex;
+    flex-direction: column;
+}
+
+.drop-area {
+    border-radius: var(--x4, 16px);
+    border: 1px dashed rgba(76, 76, 76, 1);
+    background-color: #0e0e0e;
+    color: #c478ff;
+    font-weight: 500;
+    text-align: center;
+    padding: 24px 12px;
+}
+
+.icon {
+    width: 30px;
+}
+
+.instruction {
+    margin-top: 24px;
+}
+
+.options {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.option {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+}
+
+.label {
+    color: #bbb;
+    font: 400 16px Inter, sans-serif;
+}
+
+.format-selector,
+.size-selector {
+    border-radius: var(--x2, 8px);
+    border: 1px solid rgba(59, 59, 59, 1);
+    background-color: #202020;
+    display: flex;
+    gap: 0px;
+    color: #a3a3a3;
+}
+
+.selected-format,
+.size-text {
+    flex: 1;
+    padding: 12px;
+    font: 400 16px Inter, sans-serif;
+}
+
+.format-arrow,
+.size-arrow {
+    padding: 7px 4px;
+    font: 590 14px/136% SF Pro, sans-serif;
+}
+
+.size-unit {
+    padding: 12px;
+}
+
+.action-button {
+    color: #fff;
+    text-align: center;
+    align-self: start;
+    font: 590 16px/131% SF Pro, sans-serif;
+}
