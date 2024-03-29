@@ -1,17 +1,16 @@
-let filesToUpload = [];
+let thumbnailsContainer;
+let leftContent;
 
 document.addEventListener('DOMContentLoaded', () => {
-    const leftContent           = document.getElementById('left-content');
-    const uploadContainer       = document.getElementById('upload-container');
+    thumbnailsContainer   = document.getElementById('thumbnails-container');
+    leftContent           = document.getElementById('left-content');
+    uploadContainer       = document.getElementById('upload-container');
+    
+    const uploadBox             = document.getElementById('upload-box-main');
     const fileUploadContainer   = document.getElementById('file-upload-container');
-    const thumbnailsContainer   = document.getElementById('thumbnails-container');
-    const uploadBox             = document.getElementById('upload-box');
     const fileUploadInput       = document.getElementById('file-upload');
 
-    // uploadFiles(filesToUpload); // Send the filesToUpload list to the backend
-    // receiveFiles(fileUploadInput.files);
-    // refresh_preview()
-
+    addPanel();
 
     fileUploadInput.addEventListener('change', () => {
         receiveFiles(fileUploadInput.files);
@@ -56,110 +55,106 @@ document.addEventListener('DOMContentLoaded', () => {
         receiveFiles(validFiles);
         refresh_preview()
     });
-
-
-    function receiveFiles(files)
-    {
-        for (let i = 0; i < files.length; i++) {
-            const file = files[i];
-            filesToUpload.push(file);
-        }
-
-        uploadFiles(filesToUpload);
-    }
-
-
-    function refresh_preview() {
-        thumbnailsContainer.innerHTML = '';
-
-        // AG: can do a lot of stuf here
-        if (filesToUpload.length > 0) {            
-            document.getElementById('thumbnails-container').style.display = 'flex';
-
-            for (let i = 0; i < filesToUpload.length; i++) {
-                const file = filesToUpload[i];
-                addThumbnail(file);
-            }
-
-            console.log('BEFORE APPEND CHILD')
-            if (leftContent && uploadContainer) {
-                console.log('APPEND CHILD')
-                leftContent.appendChild(uploadContainer);
-            }
-
-        } else {
-            console.log('BEFORE FIRST CHILD')
-            if (leftContent && uploadContainer && leftContent.firstChild) {
-                console.log('FIRST CHILD')
-                leftContent.insertBefore(uploadContainer, leftContent.firstChild);
-            } else if (leftContent && uploadContainer) {
-                leftContent.appendChild(uploadContainer);
-            }
-
-            document.getElementById('thumbnails-container').style.display = 'none';
-        }
-    }
-
-    function removeFile(fileToRemove) {
-        filesToUpload = filesToUpload.filter(file => file !== fileToRemove);
-    }
-
-    function addThumbnail(file) {
-        const container = document.createElement('div');
-    
-        const thumbnail = document.createElement('img');
-        thumbnail.classList.add('thumbnail');
-        thumbnail.src = URL.createObjectURL(file); // Setting the source of the image
-        thumbnail.addEventListener('click', () => {
-            changeImagePreview(file);
-        });
-    
-        // Add red cross icon
-        const closeButton = document.createElement('i');
-        closeButton.classList.add('fas', 'fa-times', 'close-icon');
-        closeButton.addEventListener('click', () => {
-            removeThumbnail(container, file);
-        });
-    
-        container.appendChild(thumbnail);
-        container.appendChild(closeButton);
-    
-        thumbnailsContainer.appendChild(container);
-    }
-
-    function removeThumbnail(container, file) {
-        container.remove(); // Remove the thumbnail container
-        removeFile(file);
-        refresh_preview();
-    }
-
-    function uploadFiles(files) {
-        console.log('Upload files')
-
-        const formData = new FormData();
-
-        for (let i = 0; i < files.length; i++) {
-            formData.append('file', files[i]);
-        }
-
-        // alert('FormData: {formData}')
-
-        fetch('/upload', {
-            method: 'POST',
-            body: formData,
-        })
-            .then(response => response.json())
-            .then(data => {
-                // Handle the response from the server
-                console.log('Upload successful', data);
-            })
-            .catch(error => {
-                // Handle errors
-                console.error('Error during upload', error);
-            });
-    }
 });
 
+function receiveFiles(files)
+{
+    for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        filenames.push(file);
+    }
+    uploadFiles(filenames);
+}
+
+function removeFile(fileToRemove) {
+    filenames = filenames.filter(file => file !== fileToRemove);
+}
+
+function uploadFiles(files) {
+    console.log('Upload files')
+
+    const formData = new FormData();
+
+    for (let i = 0; i < files.length; i++) {
+        formData.append('file', files[i]);
+    }
+
+    // alert('FormData: {formData}')
+
+    fetch('/upload', {
+        method: 'POST',
+        body: formData,
+    })
+        .then(response => response.json())
+        .then(data => {
+            // Handle the response from the server
+            console.log('Upload successful', data);
+        })
+        .catch(error => {
+            // Handle errors
+            console.error('Error during upload', error);
+        });
+}
+
+function refresh_preview() {
+    thumbnailsContainer.innerHTML = '';
+
+    // AG: can do a lot of stuf here
+    if (filenames.length > 0) {            
+        document.getElementById('thumbnails-container').style.display = 'flex';
+
+        for (let i = 0; i < filenames.length; i++) {
+            const file = filenames[i];
+            addThumbnail(file);
+        }
+
+        console.log('BEFORE APPEND CHILD')
+        if (leftContent && uploadContainer) {
+            console.log('APPEND CHILD')
+            leftContent.appendChild(uploadContainer);
+        }
+
+    } else {
+        console.log('BEFORE FIRST CHILD')
+        if (leftContent && uploadContainer && leftContent.firstChild) {
+            console.log('FIRST CHILD')
+            leftContent.insertBefore(uploadContainer, leftContent.firstChild);
+        } else if (leftContent && uploadContainer) {
+            leftContent.appendChild(uploadContainer);
+        }
+
+        document.getElementById('thumbnails-container').style.display = 'none';
+    }
+}
+
+function addThumbnail(file) {
+    const container = document.createElement('div');
+
+    const thumbnail = document.createElement('img');
+    thumbnail.classList.add('thumbnail');
+    thumbnail.src = URL.createObjectURL(file); // Setting the source of the image
+    thumbnail.addEventListener('click', () => {
+        changeImagePreview(file);
+    });
+
+    // Add red cross icon
+    const closeButton = document.createElement('i');
+    closeButton.classList.add('fas', 'fa-times', 'close-icon');
+    closeButton.addEventListener('click', () => {
+        removeThumbnail(container, file);
+    });
+
+    container.appendChild(thumbnail);
+    container.appendChild(closeButton);
+
+    thumbnailsContainer.appendChild(container);
+}
+
+function removeThumbnail(container, file) {
+    container.remove(); // Remove the thumbnail container
+    removeFile(file);
+    refresh_preview();
+}
 
 async function downloadOutput(buttonElement) {
     // Find the nearest parent settings panel
@@ -169,12 +164,12 @@ async function downloadOutput(buttonElement) {
     var format = settingsPanel.querySelector('.format').value;
     var size = settingsPanel.querySelector('.size').value;
 
-    console.log('Files to upload: ' + filesToUpload.length)
+    console.log('Files to upload: ' + filenames.length)
 
     // Prepare the data to be sent in the POST request
     var data = {
         'type': 'single',
-        'filenames': filesToUpload.map(file => file.name),
+        'filenames': filenames.map(file => file.name),
         'format': format,
         'size': size
     };
@@ -237,7 +232,7 @@ async function downloadAll() {
     // Prepare the data to be sent in the POST request
     const data = {
         'type': 'all',
-        'filenames': filesToUpload.map(file => file.name),
+        'filenames': filenames.map(file => file.name),
         // 'formats': formats,
         // 'sizes': sizes
         'outputs': outputs
@@ -299,6 +294,43 @@ function addPanel() {
 
     // Set up the delete button event handler in the cloned panel
     newPanel.querySelector('.delete-panel').onclick = function() { deletePanel(this); };
+
+    // Add event listener for file upload input in the new panel
+    var fileUploadInputSmall = newPanel.querySelector('.file-upload-input-small');
+    var uploadBoxSmall = newPanel.querySelector('.upload-box-small');
+    var fileUploadContainerSmall = newPanel.querySelector('.file-upload-container-small');
+
+    console.log(fileUploadContainerSmall)
+
+    fileUploadInputSmall.addEventListener('change', () => {
+        receiveFiles(fileUploadInputSmall.files);
+        refresh_preview();
+    });
+    
+    uploadBoxSmall.addEventListener('dragover', (event) => {
+        event.preventDefault();
+        fileUploadContainerSmall.classList.add('dragover');
+    });
+
+    uploadBoxSmall.addEventListener('dragleave', () => {
+        fileUploadContainerSmall.classList.remove('dragover');
+    });
+
+    uploadBoxSmall.addEventListener('drop', (event) => {
+        event.preventDefault();
+        fileUploadContainerSmall.classList.remove('dragover');
+        receiveFiles(event.dataTransfer.files);
+        refresh_preview();
+    });
+
+    fileUploadContainerSmall.addEventListener('click', (event) => {
+        console.log('Clicked!!!')
+        // Only trigger click on file input if the clicked element is not the file input itself
+        if (event.target !== fileUploadInputSmall) {
+            fileUploadInputSmall.click();
+        }
+    });
+    
 
     settingsContainer.insertBefore(newPanel, addButton);
 }

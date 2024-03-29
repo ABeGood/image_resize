@@ -140,14 +140,10 @@ header p {
 }
 
 
-.upload-box {
+.upload-box-main {
     padding: 40px;
     border-radius: 8px;
     display: inline-block;
-}
-
-.upload-box p {
-    margin: 20px 0;
 }
 
 .file-upload-container {
@@ -384,18 +380,29 @@ header p {
     font-size: 1.5em;
 }
 
-.upload-box {
+.upload-box-main {
     padding: 40px;
     border-radius: 8px;
     display: inline-block;
 }
 
-.upload-box p {
-    margin: 20px 0;
-}
-
 .file-upload-container {
     width: 600px;
+    height: 300px;
+    border: 2px dashed #ccc;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    border-radius: 10px;
+    margin: 20px auto;
+}
+
+.file-upload-container-small {
+    width: 300px;
     height: 300px;
     border: 2px dashed #ccc;
     display: flex;
@@ -421,6 +428,14 @@ header p {
 }
 
 .file-upload-input {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.file-upload-input-small {
     position: absolute;
     width: 100%;
     height: 100%;
@@ -545,10 +560,17 @@ button:hover {
         max-width: 20px; /* Уменьшил размер изображений для маленьких экранов */
         max-height: 20px;
     }
-    .upload-box {
+    .upload-box-main {
     max-width: 100%;
-    }
+
+    .upload-box-small {
+        max-width: 100%;
+
     .file-upload-label {
+        font-size: 12px;
+    }
+
+    .file-upload-label-small {
         font-size: 12px;
     }
 }
