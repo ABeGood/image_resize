@@ -1,5 +1,6 @@
 let thumbnailsContainer;
 let leftContent;
+let panelFileLists = {};
 
 document.addEventListener('DOMContentLoaded', () => {
     thumbnailsContainer   = document.getElementById('thumbnails-container');
@@ -13,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
     addPanel();
 
     fileUploadInput.addEventListener('change', () => {
-        receiveFiles(fileUploadInput.files);
+        receiveFiles(fileUploadInput.files, -1);
         refresh_preview()
     });
 
@@ -29,7 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
     uploadBox.addEventListener('drop', (event) => {
         event.preventDefault();
         fileUploadContainer.classList.remove('dragover');
-        receiveFiles(event.dataTransfer.files);
+        receiveFiles(event.dataTransfer.files, -1);
         refresh_preview()
     });
 
@@ -52,34 +53,44 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
         }
-        receiveFiles(validFiles);
+        receiveFiles(validFiles, -1);
         refresh_preview()
     });
 });
 
-function receiveFiles(files)
+function receiveFiles(files, panelIndex)
 {
+    console.log('PANEL INDEX:' + panelIndex)
     for (let i = 0; i < files.length; i++) {
         const file = files[i];
         filenames.push(file);
+
+        if (!panelFileLists[panelIndex]) {
+            panelFileLists[panelIndex] = []; // Initialize list if needed
+        }
+        panelFileLists[panelIndex].push(file);
     }
     uploadFiles(filenames);
 }
 
 function removeFile(fileToRemove) {
     filenames = filenames.filter(file => file !== fileToRemove);
+
+
+    
+    for (panelIndex of Object.keys(panelFileLists))
+    {
+        panelFileLists[panelIndex] = panelFileLists[panelIndex].filter(file => file !== fileToRemove);
+    }
+    refresh_preview();
 }
 
 function uploadFiles(files) {
-    console.log('Upload files')
-
     const formData = new FormData();
 
     for (let i = 0; i < files.length; i++) {
         formData.append('file', files[i]);
     }
-
-    // alert('FormData: {formData}')
 
     fetch('/upload', {
         method: 'POST',
@@ -100,37 +111,54 @@ function refresh_preview() {
     thumbnailsContainer.innerHTML = '';
 
     // AG: can do a lot of stuf here
-    if (filenames.length > 0) {            
-        document.getElementById('thumbnails-container').style.display = 'flex';
-
+    if (filenames.length > 0) {    
+        thumbnailsContainer.style.display = 'flex';
         for (let i = 0; i < filenames.length; i++) {
             const file = filenames[i];
-            addThumbnail(file);
+            addThumbnail(file, thumbnailsContainer);
         }
 
-        console.log('BEFORE APPEND CHILD')
         if (leftContent && uploadContainer) {
-            console.log('APPEND CHILD')
             leftContent.appendChild(uploadContainer);
         }
 
     } else {
-        console.log('BEFORE FIRST CHILD')
         if (leftContent && uploadContainer && leftContent.firstChild) {
-            console.log('FIRST CHILD')
             leftContent.insertBefore(uploadContainer, leftContent.firstChild);
         } else if (leftContent && uploadContainer) {
             leftContent.appendChild(uploadContainer);
         }
 
-        document.getElementById('thumbnails-container').style.display = 'none';
+        thumbnailsContainer.style.display = 'none';
+    }
+
+    // const fileUploadContainers = document.querySelectorAll('.file-upload-container-small');
+    // fileUploadContainers.forEach(container => {
+    //     container.innerHTML = ''; // Clear thumbnails
+    // });
+
+    // Iterate through each settings panel
+    if(Object.keys(panelFileLists).length > 0)
+    {
+        const settingsPanels = document.querySelectorAll('.settings-panel');
+        settingsPanels.forEach((panel) => {
+            const fileUploadContainer = panel.querySelector('.thumbnails-container-small');
+            fileUploadContainer.innerHTML = '';
+            console.log('PANEL INDEX: '+ panel.index)
+            // Display thumbnails for the panel's file list
+            if (panelFileLists[panel.index]) { // Check if file list exists
+                panelFileLists[panel.index].forEach(file => {
+                    addThumbnail(file, fileUploadContainer); // Pass container for specific panel
+                });
+            }
+        });
     }
 }
 
-function addThumbnail(file) {
-    const container = document.createElement('div');
-
+function addThumbnail(file, container) {
+    const thumbnailContainer  = document.createElement('div');
     const thumbnail = document.createElement('img');
+
     thumbnail.classList.add('thumbnail');
     thumbnail.src = URL.createObjectURL(file); // Setting the source of the image
     thumbnail.addEventListener('click', () => {
@@ -141,19 +169,13 @@ function addThumbnail(file) {
     const closeButton = document.createElement('i');
     closeButton.classList.add('fas', 'fa-times', 'close-icon');
     closeButton.addEventListener('click', () => {
-        removeThumbnail(container, file);
+        removeFile(file);
     });
 
     container.appendChild(thumbnail);
     container.appendChild(closeButton);
 
-    thumbnailsContainer.appendChild(container);
-}
-
-function removeThumbnail(container, file) {
-    container.remove(); // Remove the thumbnail container
-    removeFile(file);
-    refresh_preview();
+    container.appendChild(thumbnailContainer);
 }
 
 async function downloadOutput(buttonElement) {
@@ -163,8 +185,6 @@ async function downloadOutput(buttonElement) {
     // Extract values for format, size, and filename from the specific settings panel
     var format = settingsPanel.querySelector('.format').value;
     var size = settingsPanel.querySelector('.size').value;
-
-    console.log('Files to upload: ' + filenames.length)
 
     // Prepare the data to be sent in the POST request
     var data = {
@@ -291,19 +311,21 @@ function addPanel() {
     newPanel.id = '';
     newPanel.style.display = '';
     newPanel.className = 'settings-panel';
+    newPanel.index = findMinimalFreeKey()
 
+    panelFileLists[newPanel.index] = [];
     // Set up the delete button event handler in the cloned panel
     newPanel.querySelector('.delete-panel').onclick = function() { deletePanel(this); };
+
+    console.log(newPanel)
 
     // Add event listener for file upload input in the new panel
     var fileUploadInputSmall = newPanel.querySelector('.file-upload-input-small');
     var uploadBoxSmall = newPanel.querySelector('.upload-box-small');
     var fileUploadContainerSmall = newPanel.querySelector('.file-upload-container-small');
 
-    console.log(fileUploadContainerSmall)
-
     fileUploadInputSmall.addEventListener('change', () => {
-        receiveFiles(fileUploadInputSmall.files);
+        receiveFiles(fileUploadInputSmall.files, newPanel.index);
         refresh_preview();
     });
     
@@ -319,12 +341,11 @@ function addPanel() {
     uploadBoxSmall.addEventListener('drop', (event) => {
         event.preventDefault();
         fileUploadContainerSmall.classList.remove('dragover');
-        receiveFiles(event.dataTransfer.files);
+        receiveFiles(event.dataTransfer.files, newPanel.index);
         refresh_preview();
     });
 
     fileUploadContainerSmall.addEventListener('click', (event) => {
-        console.log('Clicked!!!')
         // Only trigger click on file input if the clicked element is not the file input itself
         if (event.target !== fileUploadInputSmall) {
             fileUploadInputSmall.click();
@@ -335,9 +356,23 @@ function addPanel() {
     settingsContainer.insertBefore(newPanel, addButton);
 }
 
-
 function deletePanel(button) {
     var settingsContainer = document.querySelector('.settings-container');
     var panelToRemove = button.closest('.settings-panel');
     settingsContainer.removeChild(panelToRemove);
+    delete panelFileLists[panelToRemove.panelIndex];
+}
+
+function findMinimalFreeKey() {
+    if(Object.keys(panelFileLists).length < 1){
+        return 0
+    }
+
+    let minFreeKey = 1; // Start checking from 1
+
+    while (panelFileLists.hasOwnProperty(minFreeKey)) {
+        minFreeKey++; // Increment until a free key is found
+    }
+
+    return minFreeKey;
 }
