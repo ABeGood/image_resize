@@ -1,55 +1,70 @@
-body, html {
-    height: 100%;
+body {
     margin: 0;
-    font-family: 'SF Pro', 'Helvetica Neue', Arial, sans-serif; /* Перечислите нужные вам шрифты в порядке приоритета */
-    background-color: #131313;
-    color: white;
-}
-@font-face {
-    font-family: 'SF Pro';
-    src: url('https://fonts.cdnfonts.com/css/sf-pro-display') format('truetype'); /* Укажите прямую ссылку на Regular шрифт */
-    font-weight: normal;
-    font-style: normal;
+    padding: 0;
+    font-family: 'Axiforma', sans-serif;
+    background-color: #131313; /* Цвет фона */
+    color: #fff; /* Цвет текста */
 }
 
-@font-face {
-    font-family: 'SF Pro';
-    src: url('https://fonts.cdnfonts.com/css/sf-pro-display') format('truetype'); /* Укажите прямую ссылку на Bold шрифт */
-    font-weight: bold;
-    font-style: normal;
-}
 .container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 50px;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+.content-top {
+    margin: 80px 0;
+    text-align: center;
 }
 
-header h1 {
+.thumbnails-container {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    max-width: 600px;
+    display: none;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+}
+
+nav ul {
+    list-style: none;
     margin: 0;
-    font-size: 2em;
-    text-align: center;
+    padding: 0;
 }
 
-header p {
-    margin: 10px 0 30px;
-    color: #aaa;
-    text-align: center;
+nav ul li {
+    display: inline-block;
+    margin-right: 60px; /* Отступ между ссылками */
 }
 
+nav ul li:last-child {
+    margin-right: 0; /* Убираем отступ справа у последней ссылки */
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: #CFCFCF; /* Цвет текста ссылок */
+}
+
+.login-btn button {
+    background-color: #7943D2;
+    color: #fff;
+    border: none;
+    padding: 10px 60px;
+    border-radius: 5px;
+    cursor: pointer;
+}
 .settings-panel {
-    background: #333;
-    border-radius: 10px;
-    padding: 0 10px 10px 10px;
-    width: 300px;
-    position: relative;
-    text-align: center;
-    margin-bottom: 10px;
-    box-sizing: border-box;
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: 30px;
 }
 
 .settings-panel label {
@@ -76,13 +91,8 @@ header p {
 }
 
 .download-all, .download {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 5px;
-    cursor: pointer;
-    width: calc(100% - 40px); /* Ширина минус отступы */
+  
+    width: 88px ; /* Ширина минус отступы */
     box-sizing: border-box;
     margin-top: 10px;
     max-width: 100%; /* Ограничение по максимальной ширине */
@@ -110,29 +120,7 @@ header p {
     cursor: pointer;
 }
 
-.content {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    margin-top: 20px;
-    position: relative;
-    height: 600px; /* Set the height of the content area */
-}
 
-.image-preview {
-    width: 600px; /* Set the width of the image preview area */
-    height: 600px; /* Set the height of the image preview area */
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-}
-
-.image-preview img {
-    max-width: 100%;
-    max-height: 100%;
-    border-radius: 10px;
-    object-fit: contain; /* Ensures the image keeps its aspect ratio */
-}
 
 .add-panel {
     /* ...existing styles... */
@@ -147,6 +135,55 @@ header p {
     align-items: flex-start;
     justify-content: space-between;
     padding: 30px;
+}
+
+.upload-container {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: 30px;
+    
+}
+
+
+.upload-box-main {
+    padding: 40px;
+    border-radius: 8px;
+    display: inline-block;
+}
+
+.file-upload-container {
+    width: 100px;
+    height: 100px;
+    border: 2px dashed #ccc;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    border-radius: 10px;
+ 
+}
+
+.file-upload-label {
+    font-size: 18px;
+    margin-top: 10px;
+    display: inline-block;
+    color: #585b60;
+    padding: 10px 20px;
+    margin: 10px 0;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.file-upload-input {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
 }
 
 /* Left content styles */
@@ -170,10 +207,10 @@ header p {
 /* Settings container styles */
 .settings-container {
     flex-grow: 1;
-    max-width: 40%; /* Adjust based on your layout preferences */
     display: flex;
     flex-direction: column;
-    align-items: center; /* Adjust as needed */
+    align-items: center;
+    justify-content: center;
 }
 
 .add-panel {
@@ -234,27 +271,21 @@ header p {
         border-radius: 10px;
     }
 
-.thumbnail {
-    width: 100px; /* Thumbnail width */
-    height: 100px; /* Thumbnail height */
-    object-fit: cover;
-    border-radius: 10px; /* Rounded corners */
-    cursor: pointer; /* Clickable cursor on hover */
-}
+    .thumbnail {
+        width: 100px; /* Thumbnail width */
+        height: 100px; /* Thumbnail height */
+        object-fit: cover;
+        border-radius: 10px; /* Rounded corners */
+        cursor: pointer; /* Clickable cursor on hover */
+    }
 
-.image-preview img {
-    max-width: 600px;
-    max-height: 600px;
-    border-radius: 10px;
-    object-fit: contain; /* Ensures the image keeps its aspect ratio */
-}
-.settings-container {
-    flex-grow: 1;
-    max-width: 100%; /* Adjust based on your layout preferences */
-    display: flex;
-    flex-direction: column;
-    align-items: center; /* Adjust as needed */
-}
+    .settings-container {
+        flex-grow: 1;
+        max-width: 100%; /* Adjust based on your layout preferences */
+        display: flex;
+        flex-direction: column;
+        align-items: center; /* Adjust as needed */
+    }
 }
 
 /* Медиазапрос для устройств с шириной экрана до 800px */
@@ -281,35 +312,20 @@ header p {
         padding-right: 0%;
     }
 
-
-.thumbnail {
-    width: 100px; /* Thumbnail width */
-    height: 100px; /* Thumbnail height */
-    object-fit: cover;
-    border-radius: 10px; /* Rounded corners */
-    cursor: pointer; /* Clickable cursor on hover */
-}
-.image-preview {
-    width: 100%; /* Set the width of the image preview area */
-    height: 100%; /* Set the height of the image preview area */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.image-preview img {
-    max-width: 100%;
-    max-height: 600px;
-    border-radius: 10px;
-    object-fit: contain; /* Ensures the image keeps its aspect ratio */
-}
-.settings-container {
-    flex-grow: 1;
-    max-width: 100%; /* Adjust based on your layout preferences */
-    display: flex;
-    flex-direction: column;
-    align-items: center; /* Adjust as needed */
-}
+    .thumbnail {
+        width: 100px; /* Thumbnail width */
+        height: 100px; /* Thumbnail height */
+        object-fit: cover;
+        border-radius: 10px; /* Rounded corners */
+        cursor: pointer; /* Clickable cursor on hover */
+    }
+    .settings-container {
+        flex-grow: 1;
+        max-width: 100%; /* Adjust based on your layout preferences */
+        display: flex;
+        flex-direction: column;
+        align-items: center; /* Adjust as needed */
+    }
 }
 /* Медиазапрос для устройств с шириной экрана до 420px */
 @media only screen and (max-width: 420px) {
@@ -357,11 +373,6 @@ body, html {
     font-family: 'Arial', sans-serif;
 }
 
-.upload-container {
-    text-align: center;
-    padding-top: 10%;
-}
-
 header h1 {
     margin: 0;
     font-size: 4em;
@@ -375,18 +386,29 @@ header p {
     font-size: 1.5em;
 }
 
-.upload-box {
+.upload-box-main {
     padding: 40px;
     border-radius: 8px;
     display: inline-block;
 }
 
-.upload-box p {
-    margin: 20px 0;
-}
-
 .file-upload-container {
     width: 600px;
+    height: 300px;
+    border: 2px dashed #ccc;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    border-radius: 10px;
+    margin: 20px auto;
+}
+
+.file-upload-container-small {
+    width: 100px;
     height: 300px;
     border: 2px dashed #ccc;
     display: flex;
@@ -419,20 +441,26 @@ header p {
     cursor: pointer;
 }
 
+.file-upload-input-small {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+}
+
 button {
     display: block;
     width: 300px;
     margin: 20px auto;
     padding: 15px;
-    background-color: #06f;
-    color: #fff;
     border: none;
     border-radius: 10px;
     cursor: pointer;
 }
 
 button:hover {
-    background-color: #0056b3;
+ 
 }
 
 #preview-container {
@@ -451,9 +479,9 @@ button:hover {
     max-height: 100%;
     margin-top: 20px;
     margin-bottom: 20px;
-    display: flex;
+    display: none;
     justify-content: flex-start;
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
     gap: 10px;
 }
 
@@ -536,92 +564,19 @@ button:hover {
         max-width: 20px; /* Уменьшил размер изображений для маленьких экранов */
         max-height: 20px;
     }
-    .upload-box {
+    .upload-box-main {
     max-width: 100%;
     }
+
+    .upload-box-small {
+        max-width: 100%;
+    }
+
     .file-upload-label {
         font-size: 12px;
     }
-}
 
-.panel {
-    border-radius: var(--x2, 8px);
-    border: 1px solid rgba(37, 37, 37, 0.62);
-    background-color: #1c1c1c;
-    margin-top: 12px;
-    padding: 13px 24px 24px;
-}
-
-.column {
-    display: flex;
-    flex-direction: column;
-}
-
-.drop-area {
-    border-radius: var(--x4, 16px);
-    border: 1px dashed rgba(76, 76, 76, 1);
-    background-color: #0e0e0e;
-    color: #c478ff;
-    font-weight: 500;
-    text-align: center;
-    padding: 24px 12px;
-}
-
-.icon {
-    width: 30px;
-}
-
-.instruction {
-    margin-top: 24px;
-}
-
-.options {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-
-.option {
-    display: flex;
-    gap: 16px;
-    align-items: center;
-}
-
-.label {
-    color: #bbb;
-    font: 400 16px Inter, sans-serif;
-}
-
-.format-selector,
-.size-selector {
-    border-radius: var(--x2, 8px);
-    border: 1px solid rgba(59, 59, 59, 1);
-    background-color: #202020;
-    display: flex;
-    gap: 0px;
-    color: #a3a3a3;
-}
-
-.selected-format,
-.size-text {
-    flex: 1;
-    padding: 12px;
-    font: 400 16px Inter, sans-serif;
-}
-
-.format-arrow,
-.size-arrow {
-    padding: 7px 4px;
-    font: 590 14px/136% SF Pro, sans-serif;
-}
-
-.size-unit {
-    padding: 12px;
-}
-
-.action-button {
-    color: #fff;
-    text-align: center;
-    align-self: start;
-    font: 590 16px/131% SF Pro, sans-serif;
+    .file-upload-label-small {
+        font-size: 12px;
+    }
 }
