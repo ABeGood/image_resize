@@ -99,49 +99,47 @@ def upload():
 def compress():
     if request.is_json:
         args = request.get_json()
-        files_to_clean = []
+        # files_to_clean = []
 
         zip_filename = os.path.join(tempfile.gettempdir(), "compressed_images.zip")
 
-        if args.get('type') == 'single':
-            filenames = args.get('filenames')
-            format = args.get('format')
-            limit = args.get('size')
+        # if args.get('type') == 'single':
+        #     filenames = args.get('filenames')
+        #     format = args.get('format')
+        #     limit = args.get('size')
 
-            with zipfile.ZipFile(zip_filename, 'w') as zipf:
-                for filename in filenames:
+        #     with zipfile.ZipFile(zip_filename, 'w') as zipf:
+        #         for filename in filenames:
+        #             filename = filename.lstrip('/')
+        #             # output_file = os.path.join(COMPRESSED_FOLDER, f'{os.path.basename(filename).rsplit(".", 1)[0]}.{format}')
+        #             output_file = ''.join([COMPRESSED_FOLDER, '/', f'{os.path.basename(filename).rsplit(".", 1)[0]}.{format}'])
+        #             print(output_file)
+        #             compress_image(filename, output_file, target_size_kb=int(limit))
+        #             zipf.write(output_file, arcname=os.path.basename(output_file))
+        #             files_to_clean.append(output_file)
+
+        outputs = args.get('outputs')
+
+        with zipfile.ZipFile(zip_filename, 'w') as zipf:            
+            for output in outputs:
+                format = output[1]
+                limit = int(output[2])
+
+                for filename in output[0]:
                     filename = filename.lstrip('/')
+
+                    # The folder name in the ZIP will be based on the format
+                    folder_name = format +'-'+str(limit)+'Kb'
+
                     # output_file = os.path.join(COMPRESSED_FOLDER, f'{os.path.basename(filename).rsplit(".", 1)[0]}.{format}')
                     output_file = ''.join([COMPRESSED_FOLDER, '/', f'{os.path.basename(filename).rsplit(".", 1)[0]}.{format}'])
-                    print(output_file)
+
                     compress_image(filename, output_file, target_size_kb=int(limit))
-                    zipf.write(output_file, arcname=os.path.basename(output_file))
-                    files_to_clean.append(output_file)
-
-        elif args.get('type') == 'all':
-            filenames = args.get('filenames')
-            outputs = args.get('outputs')
-
-            with zipfile.ZipFile(zip_filename, 'w') as zipf:
-                for filename in filenames:
-                    filename = filename.lstrip('/')
-                    # filename = os.path.join(UPLOAD_FOLDER, filename)
-                    for output in outputs:
-                        format = output[0]
-                        limit = int(output[1])
-
-                        # The folder name in the ZIP will be based on the format
-                        folder_name = format
-
-                        # output_file = os.path.join(COMPRESSED_FOLDER, f'{os.path.basename(filename).rsplit(".", 1)[0]}.{format}')
-                        output_file = ''.join([COMPRESSED_FOLDER, '/', f'{os.path.basename(filename).rsplit(".", 1)[0]}.{format}'])
-
-                        compress_image(filename, output_file, target_size_kb=int(limit))
-                        
-                        # The path inside the ZIP includes the folder name
-                        inside_zip_path = ''.join([folder_name, '/', os.path.basename(output_file)])
-                        zipf.write(output_file, arcname=inside_zip_path)
-                        files_to_clean.append(output_file)
+                    
+                    # The path inside the ZIP includes the folder name
+                    inside_zip_path = ''.join([folder_name, '/', os.path.basename(output_file)])
+                    zipf.write(output_file, arcname=inside_zip_path)
+                    # files_to_clean.append(output_file)
 
         return send_file(zip_filename, as_attachment=True, mimetype=f'application/zip')
 

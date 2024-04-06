@@ -63,24 +63,37 @@ function receiveFiles(files, panelIndex)
     console.log('PANEL INDEX:' + panelIndex)
     for (let i = 0; i < files.length; i++) {
         const file = files[i];
-        filenames.push(file);
 
-        if (!panelFileLists[panelIndex]) {
+        if (!filenames.map(file => file.name).includes(file.name))
+        {
+            filenames.push(file);
+        }
+        else{
+            alert('File with this name already exists ¯\_(ツ)_/¯')
+        }
+
+        if (!panelFileLists[panelIndex]) 
+        {
             panelFileLists[panelIndex] = []; // Initialize list if needed
         }
-        panelFileLists[panelIndex].push(file);
+
+        if (!panelFileLists[panelIndex].includes(file)) 
+        {
+            panelFileLists[panelIndex].push(file);
+        }
     }
-    uploadFiles(filenames);
+    uploadFiles(filenames);  // Maybe don't upload right here
 }
 
-function removeFile(fileToRemove) {
-    filenames = filenames.filter(file => file !== fileToRemove);
-
-
-    
+function removeFile(fileToRemove, removeFromEverywhere) {
     for (panelIndex of Object.keys(panelFileLists))
     {
         panelFileLists[panelIndex] = panelFileLists[panelIndex].filter(file => file !== fileToRemove);
+    }
+
+    if (removeFromEverywhere)
+    {
+        filenames = filenames.filter(file => file !== fileToRemove);
     }
     refresh_preview();
 }
@@ -142,7 +155,7 @@ function refresh_preview() {
     {
         const settingsPanels = document.querySelectorAll('.settings-panel');
         settingsPanels.forEach((panel) => {
-            const fileUploadContainer = panel.querySelector('.thumbnails-container-small');
+            const fileUploadContainer = panel.querySelector('.panel-thumbnails-container');
             fileUploadContainer.innerHTML = '';
             console.log('PANEL INDEX: '+ panel.index)
             // Display thumbnails for the panel's file list
@@ -155,20 +168,39 @@ function refresh_preview() {
     }
 }
 
-function addThumbnail(file, container) {
+function addThumbnail(file, container, downloadButton = false) {
+    // const thumbnailContainer  = document.createElement('div');
     const thumbnail = document.createElement('img');
 
     thumbnail.classList.add('thumbnail');
     thumbnail.src = URL.createObjectURL(file); // Setting the source of the image
-    thumbnail.addEventListener('click', () => {
-        changeImagePreview(file);
-    });
 
     // Add red cross icon
     const closeButton = document.createElement('i');
     closeButton.classList.add('fas', 'fa-times', 'close-icon');
-    closeButton.addEventListener('click', () => {
-        removeFile(file);
+    closeButton.addEventListener('click', (event) => {
+        removeFromEverywhere = false;
+        if (container.id == 'thumbnails-container')
+        {
+            removeFromEverywhere = true;
+        }
+        removeFile(file, removeFromEverywhere);
+    });
+
+    // Add download button if downloadButton is true
+    // if (downloadButton) {
+    //     const downloadButtonElement = document.createElement('button');
+    //     downloadButtonElement.textContent = 'Download';
+    //     downloadButtonElement.addEventListener('click', () => {
+    //         console.log('Single output; File: '+file)
+    //         // downloadOutput(file); // Call your downloadOutput function
+    //     });
+    //     container.appendChild(downloadButtonElement);
+    // }
+
+    thumbnail.draggable = true;
+    thumbnail.addEventListener('dragstart', (event) => {
+        event.dataTransfer.setData('text/plain', file.name); // Store filename during drag
     });
 
     container.appendChild(thumbnail);
@@ -180,15 +212,16 @@ async function downloadOutput(buttonElement) {
     var settingsPanel = buttonElement.closest('.settings-panel');
 
     // Extract values for format, size, and filename from the specific settings panel
+    const output_filenames = panelFileLists[settingsPanel.index].map(file => file.name);
     var format = settingsPanel.querySelector('.format').value;
     var size = settingsPanel.querySelector('.size').value;
 
+    const outputs = []
+    outputs.push([output_filenames, format, size]);
+
     // Prepare the data to be sent in the POST request
     var data = {
-        'type': 'single',
-        'filenames': filenames.map(file => file.name),
-        'format': format,
-        'size': size
+        'outputs': outputs,
     };
 
     // Send the POST request to the Flask endpoint
@@ -243,15 +276,15 @@ async function downloadAll() {
 
     settingsPanels.forEach(async (panel) => {
         // Extract values for format, size, and filename from each settings panel
-        outputs.push([panel.querySelector('.format').value, panel.querySelector('.size').value]);
+        const output_filenames = panelFileLists[panel.index].map(file => file.name);
+        const format = panel.querySelector('.format').value
+        const size = panel.querySelector('.size').value
+
+        outputs.push([output_filenames, format, size]);
     });
 
     // Prepare the data to be sent in the POST request
     const data = {
-        'type': 'all',
-        'filenames': filenames.map(file => file.name),
-        // 'formats': formats,
-        // 'sizes': sizes
         'outputs': outputs
     };
 
@@ -336,9 +369,26 @@ function addPanel() {
     });
 
     uploadBoxSmall.addEventListener('drop', (event) => {
+        // Retrieve filename from data attributes and add it to upload-box-small
         event.preventDefault();
         fileUploadContainerSmall.classList.remove('dragover');
-        receiveFiles(event.dataTransfer.files, newPanel.index);
+
+        const filename = event.dataTransfer.getData('text/plain');
+        const file = filenames.find(file => file.name === filename);
+
+        if (!file)
+        {
+            console.error('File not found in filenames list');
+            return;
+        }
+
+        // TODO: receive files and move to output separately
+        if (!panelFileLists[newPanel.index].includes(file)) 
+        {
+            panelFileLists[newPanel.index].push(file);
+        }
+        // Up to here
+
         refresh_preview();
     });
 
