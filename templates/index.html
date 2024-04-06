@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Image Upscaler</title>
-    <link rel="stylesheet" href="static/compressor_style.css">
+    <link rel="stylesheet" href="static/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha512-...." crossorigin="anonymous" />
 </head>
 
@@ -15,7 +15,7 @@
 
 <body>
 
-    <div class="container">
+    <div class="home">
         <header>
             <div class="coco-logo">
                 <img src="static/img/logo.svg" alt="Логотип">
@@ -38,65 +38,59 @@
                 <p>Compress your images in seconds</p>
             </div>
         </div>
+            
+        <div class="main-content" id="main-content">
         
-            <!-- Thumbnails Container -->
-            
-            <div class="upload-container" id="upload-container">
-            
-                <div class="upload-box-main" id="upload-box-main">
-                    <div class="thumbnails-container" id="thumbnails-container"></div>
+            <div class="main-content-left" id="main-content-left">
+                <div class="thumbnails-container-left" id="thumbnails-container-left"></div>
 
-                    <div class="file-upload-container" id="file-upload-container">
-                        <i class="fa-solid fa-file-arrow-up fa-beat fa-2x"></i>
-                        <label for="file-upload" class="file-upload-label">Click, paste, or drop files here to start</label>
-                        <input type="file" id="file-upload" class="file-upload-input" name="file" multiple>
-                    </div>
-                </div>
-                <div class="settings-container">
-
-                    <div id ="settings-panel-template" style="display: none;">
-                        <div class="settings">
-                            <div class="upload-box-small" id="upload-box-small">
-                                <div class="file-upload-container-small" id="file-upload-container-small">
-                                    <i class="fa-solid fa-file-arrow-up fa-beat fa-2x"></i>
-                                    <label for="file-upload-small" class="file-upload-label">Click, paste, or drop files here to start</label>
-                                    <input type="file" class="file-upload-input-small" id="file-upload-small" name="file-small" multiple>
-                                </div>
-                            </div>
-                
-                            <div class="settings-box"> 
-                                <label for="format_in_template">Choose format</label>
-                                <select class="format" id="format_in_template">
-                                    <option value="png">PNG</option>
-                                    <option value="jpeg">JPEG</option>
-                                    <option value="webp">WEBP</option>
-                                </select>
-                    
-                                <input type="hidden" class="filename" name="filename" value="{{ url_for('static', filename=filenames) }}">
-                                
-                                <label for="size_in_template">Size</label>
-                                <input type="number" class="size" name="size" id="size_in_template" value="128" min="0" style="-moz-appearance: textfield;">
-    
-                            </div>
-
-                            <div>
-                                <button class="delete-panel" onclick="deletePanel(this)">Delete</button>
-    
-                                <div class="download" onclick="downloadOutput(this)">
-                                    <img src="static/img/Button.svg" alt="Download Icon">
-                                </div>
-                            </div>
-                        </div>
-
-                        <div>
-                            <div class="panel-thumbnails-container" id="panel-thumbnails-container"></div>
-                        </div>
-                        
-                </div>
-                    <button class="download-all" onclick="downloadAll()">Download all</button>
-                    <div class="add-panel" onclick="addPanel()">+</div>
+                <div class="main-upload-container" id="main-upload-container">
+                    <i class="fa-solid fa-file-arrow-up fa-beat fa-2x"></i>
+                    <label for="main-file-upload" class="main-file-upload-label">Click, paste, or drop files here to start</label>
+                    <input type="file" class="main-file-upload" id="main-file-upload" name="file" multiple>
                 </div>
             </div>
+            <div class="main-content-right">
+
+                <div id ="settings-panel-template" style="display: none;">
+                    <div class="panel-upper" id="panel-upper">
+                        <div class="upload-box-small" id="upload-box-small">
+                            <div class="panel-upload-container" id="panel-upload-container">
+                                <i class="fa-solid fa-file-arrow-up fa-beat fa-2x"></i>
+                                <label for="panel-file-upload" class="panel-file-upload-label">Click, paste, or drop files here to start</label>
+                                <input type="file" class="panel-file-upload" id="panel-file-upload" name="file-small" multiple>
+                            </div>
+                        </div>
+            
+                        <div class="settings-box"> 
+                            <label for="format_in_template">Choose format</label>
+                            <select class="format" id="format_in_template">
+                                <option value="png">PNG</option>
+                                <option value="jpeg">JPEG</option>
+                                <option value="webp">WEBP</option>
+                            </select>
+                
+                            <input type="hidden" class="filename" name="filename" value="{{ url_for('static', filename=filenames) }}">
+                            
+                            <label for="size_in_template">Size</label>
+                            <input type="number" class="size" name="size" id="size_in_template" value="128" min="0" style="-moz-appearance: textfield;">
+    
+                        </div>
+    
+                        <div>
+                            <div class="download" onclick="downloadOutput(this)">
+                                <img src="static/img/Button.svg" alt="Download Icon">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel-thumbnails-container" id="panel-thumbnails-container"></div>
+                    
+            </div>
+                <button class="download-all" onclick="downloadAll()">Download all</button>
+                <div class="add-panel" onclick="addPanel()">+</div>
+            </div>
+        </div>
         
             
             

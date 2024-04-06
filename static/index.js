@@ -3,13 +3,13 @@ let leftContent;
 let panelFileLists = {};
 
 document.addEventListener('DOMContentLoaded', () => {
-    thumbnailsContainer   = document.getElementById('thumbnails-container');
+    thumbnailsContainer   = document.getElementById('thumbnails-container-left');
     leftContent           = document.getElementById('left-content');
-    uploadContainer       = document.getElementById('upload-container');
+    uploadContainer       = document.getElementById('main-content');
     
-    const uploadBox             = document.getElementById('upload-box-main');
-    const fileUploadContainer   = document.getElementById('file-upload-container');
-    const fileUploadInput       = document.getElementById('file-upload');
+    const uploadBox             = document.getElementById('main-content-left');
+    const fileUploadContainer   = document.getElementById('main-upload-container');
+    const fileUploadInput       = document.getElementById('main-file-upload');
 
     addPanel();
 
@@ -145,10 +145,6 @@ function refresh_preview() {
         thumbnailsContainer.style.display = 'none';
     }
 
-    // const fileUploadContainers = document.querySelectorAll('.file-upload-container-small');
-    // fileUploadContainers.forEach(container => {
-    //     container.innerHTML = ''; // Clear thumbnails
-    // });
 
     // Iterate through each settings panel
     if(Object.keys(panelFileLists).length > 0)
@@ -169,42 +165,44 @@ function refresh_preview() {
 }
 
 function addThumbnail(file, container, downloadButton = false) {
-    // const thumbnailContainer  = document.createElement('div');
-    const thumbnail = document.createElement('img');
+    const thumbnail = document.createElement('div');
+    const thumbnailImg = document.createElement('img');
+    const filename_text = document.createTextNode(file.name);
 
-    thumbnail.classList.add('thumbnail');
-    thumbnail.src = URL.createObjectURL(file); // Setting the source of the image
+    thumbnailImg.classList.add('thumbnail-img');
+    thumbnailImg.src = URL.createObjectURL(file); // Setting the source of the image
+
 
     // Add red cross icon
     const closeButton = document.createElement('i');
     closeButton.classList.add('fas', 'fa-times', 'close-icon');
     closeButton.addEventListener('click', (event) => {
         removeFromEverywhere = false;
-        if (container.id == 'thumbnails-container')
+        if (container.id == 'thumbnails-container-left')
         {
             removeFromEverywhere = true;
         }
         removeFile(file, removeFromEverywhere);
     });
 
-    // Add download button if downloadButton is true
-    // if (downloadButton) {
-    //     const downloadButtonElement = document.createElement('button');
-    //     downloadButtonElement.textContent = 'Download';
-    //     downloadButtonElement.addEventListener('click', () => {
-    //         console.log('Single output; File: '+file)
-    //         // downloadOutput(file); // Call your downloadOutput function
-    //     });
-    //     container.appendChild(downloadButtonElement);
-    // }
-
     thumbnail.draggable = true;
     thumbnail.addEventListener('dragstart', (event) => {
         event.dataTransfer.setData('text/plain', file.name); // Store filename during drag
     });
 
+    thumbnail.appendChild(thumbnailImg);
+
+    if (container.id == 'panel-thumbnails-container')
+    {
+        thumbnail.classList.add('panel-thumbnail');
+        thumbnail.appendChild(filename_text);
+    }
+    else{
+        thumbnail.classList.add('thumbnail');
+    }
+    
+    thumbnail.appendChild(closeButton);
     container.appendChild(thumbnail);
-    container.appendChild(closeButton);
 }
 
 async function downloadOutput(buttonElement) {
@@ -330,7 +328,7 @@ function downloadBlob(blob, filename) {
 }
 
 function addPanel() {
-    var settingsContainer = document.querySelector('.settings-container');
+    var settingsContainer = document.querySelector('.main-content-right');
     var addButton = document.querySelector('.add-panel');
     
     // Use the hidden settings panel template for cloning
@@ -344,15 +342,22 @@ function addPanel() {
     newPanel.index = findMinimalFreeKey()
 
     panelFileLists[newPanel.index] = [];
-    // Set up the delete button event handler in the cloned panel
-    newPanel.querySelector('.delete-panel').onclick = function() { deletePanel(this); };
+
+    const closeButton = document.createElement('i');
+    closeButton.classList.add('fas', 'fa-times', 'close-icon');
+    closeButton.addEventListener('click', () => {
+        deletePanel(newPanel);
+    });
+
+
 
     console.log(newPanel)
 
     // Add event listener for file upload input in the new panel
-    var fileUploadInputSmall = newPanel.querySelector('.file-upload-input-small');
+    var fileUploadInputSmall = newPanel.querySelector('.panel-file-upload');
     var uploadBoxSmall = newPanel.querySelector('.upload-box-small');
-    var fileUploadContainerSmall = newPanel.querySelector('.file-upload-container-small');
+    var fileUploadContainerSmall = newPanel.querySelector('.panel-upload-container');
+    var settingsPanelUpper = newPanel.querySelector('.panel-upper');
 
     fileUploadInputSmall.addEventListener('change', () => {
         receiveFiles(fileUploadInputSmall.files, newPanel.index);
@@ -399,14 +404,13 @@ function addPanel() {
         }
     });
     
-
+    newPanel.insertBefore(closeButton, settingsPanelUpper);
     settingsContainer.insertBefore(newPanel, addButton);
 }
 
-function deletePanel(button) {
-    var settingsContainer = document.querySelector('.settings-container');
-    var panelToRemove = button.closest('.settings-panel');
-    settingsContainer.removeChild(panelToRemove);
+function deletePanel(panelToRemove) {
+    var mainContainerRight = document.querySelector('.main-content-right');
+    mainContainerRight.removeChild(panelToRemove);
     delete panelFileLists[panelToRemove.panelIndex];
 }
 
