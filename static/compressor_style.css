@@ -62,10 +62,12 @@ nav ul li a {
     cursor: pointer;
 }
 .settings-panel {
-    display: flex;
-    align-items: flex-start;
     justify-content: space-between;
     padding: 30px;
+}
+
+.settings {
+    display: flex;
 }
 
 .settings-panel label {
