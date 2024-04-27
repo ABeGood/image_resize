@@ -40,16 +40,21 @@
         </div>
             
         <div class="main-content" id="main-content">
-        
+            <div class="main-content-upload">
+           
             <div class="main-content-left" id="main-content-left">
-                <div class="thumbnails-container-left" id="thumbnails-container-left"></div>
+                <div class="thumbnails-container-left" id="thumbnails-container-left">
+                    
+                </div>
 
                 <div class="main-upload-container" id="main-upload-container">
-                    <i class="fa-solid fa-file-arrow-up fa-beat fa-2x"></i>
-                    <label for="main-file-upload" class="main-file-upload-label">Click, paste, or drop files here to start</label>
+                    <img src="static/img/pin.svg" alt="Upload Icon">             
+                           <label for="main-file-upload" class="main-file-upload-label">Click, paste, or drop up to 10 files here to <br> <span style="color: violet;">compress</span></label>
                     <input type="file" class="main-file-upload" id="main-file-upload" name="file" multiple>
                 </div>
             </div>
+        
+        </div>
             <div class="main-content-right">
 
                 <div id ="settings-panel-template" style="display: none;">
@@ -57,7 +62,7 @@
                         <div class="upload-box-small" id="upload-box-small">
                             <div class="panel-upload-container" id="panel-upload-container">
                                 <i class="fa-solid fa-file-arrow-up fa-beat fa-2x"></i>
-                                <label for="panel-file-upload" class="panel-file-upload-label">Click, paste, or drop files here to start</label>
+                                <label for="panel-file-upload" class="panel-file-upload-label">Drag images here to start</label>
                                 <input type="file" class="panel-file-upload" id="panel-file-upload" name="file-small" multiple>
                             </div>
                         </div>
@@ -84,11 +89,13 @@
                         </div>
                     </div>
 
-                    <div class="panel-thumbnails-container" id="panel-thumbnails-container"></div>
+                    <div class="panel-thumbnails-container" id="panel-thumbnails-container">
+                        
+                    </div>
                     
             </div>
                 <button class="download-all" onclick="downloadAll()">Download all</button>
-                <div class="add-panel" onclick="addPanel()">+</div>
+                <div class="add-panel" onclick="addPanel()">+ Add</div>
             </div>
         </div>
         
