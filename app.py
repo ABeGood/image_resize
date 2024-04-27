@@ -5,6 +5,7 @@ import os
 import tempfile
 import zipfile
 import io
+import copy
 
 app = Flask(__name__)
 
@@ -16,50 +17,43 @@ ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'webp'}
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-def compress_image(file_name, output_path, target_size_kb):
+
+def convert_image(img, format, n_of_colors):
+    img = copy.copy(img)
+    if format in ['JPEG', 'JPG']:
+        img = img.convert('RGB')
+
+    img = img.convert("P", palette=Image.ADAPTIVE, colors=n_of_colors)
+
+    if format in ['JPEG', 'JPG']:
+        img = img.convert('RGB')
+
+    buffer = io.BytesIO()
+    img.save(buffer, format)
+    compressed_size_kb = len(buffer.getvalue()) / 1024
+    print(f'With {n_of_colors} colors compressed to {compressed_size_kb} KB')
+    buffer.close()
+
+    return img, compressed_size_kb
+
+def compress_image(file_name, output_path, format, target_size_kb):
+    format = format.upper()
+    n_of_colors = 256
+
     try:
-        min_quality = 0 # %
-        max_quality = 100 # %
-        last_quality = 0
-        tolerance = 2 # KB
-        img = Image.open(''.join([UPLOAD_FOLDER, '/', file_name]))
+        img_orig = Image.open(''.join([UPLOAD_FOLDER, '/', file_name]))
 
-        if img.mode == 'RGBA':
-            img = img.convert('RGB')
+        img, compressed_size_kb = convert_image(img_orig, format, n_of_colors)
 
-        buffer = io.BytesIO()
-        img.save(buffer, 'JPEG', quality=100)
-        compressed_size_kb = len(buffer.getvalue()) / 1024
-        print(f'With Q={100} Compressed to {compressed_size_kb} KB')
-        buffer.close()
-
-        if compressed_size_kb <= target_size_kb:
-            img.save(output_path, 'JPEG', quality=100)
-            print(f"Image compressed and saved to {output_path} with file size {compressed_size_kb:.2f} KB without quality loss!")
-            return
-
-        while True:
-            quality = (min_quality + max_quality)//2
-            
-            buffer = io.BytesIO()
-            img.save(buffer, 'JPEG', quality=quality)
-            compressed_size_kb = len(buffer.getvalue()) / 1024
-            print(f'With Q={quality} Compressed to {compressed_size_kb:.2f} KB')
-            buffer.close()
-
-            if compressed_size_kb > target_size_kb:
-                # Reduce the quality if the compressed size is too large
-                max_quality = quality
-            else:
-                # Increase the quality if the compressed size is too small
-                min_quality = quality
-
-            if last_quality == quality:
+        while n_of_colors > 5:
+            if compressed_size_kb <= target_size_kb:
                 break
 
-            last_quality = quality
+            n_of_colors -= 1
+            
+            img, compressed_size_kb = convert_image(img_orig, format, n_of_colors)
 
-        img.save(output_path, 'JPEG', quality=quality)
+        img.save(output_path, format=format)
         print(f"Image compressed and saved to {output_path} with file size {compressed_size_kb:.2f} KB")
         return
     except Exception as e:
@@ -84,9 +78,7 @@ def upload():
     filenames = []
     for file in uploaded_files:
         if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            filename = filename.replace(' ', '_')
-            # path = os.path.join(UPLOAD_FOLDER, filename)
+            filename = secure_filename(file.filename).replace(' ', '_')
             path = ''.join([UPLOAD_FOLDER, '/', filename])
             print(path)
             file.save(path)
@@ -102,22 +94,6 @@ def compress():
         # files_to_clean = []
 
         zip_filename = os.path.join(tempfile.gettempdir(), "compressed_images.zip")
-
-        # if args.get('type') == 'single':
-        #     filenames = args.get('filenames')
-        #     format = args.get('format')
-        #     limit = args.get('size')
-
-        #     with zipfile.ZipFile(zip_filename, 'w') as zipf:
-        #         for filename in filenames:
-        #             filename = filename.lstrip('/')
-        #             # output_file = os.path.join(COMPRESSED_FOLDER, f'{os.path.basename(filename).rsplit(".", 1)[0]}.{format}')
-        #             output_file = ''.join([COMPRESSED_FOLDER, '/', f'{os.path.basename(filename).rsplit(".", 1)[0]}.{format}'])
-        #             print(output_file)
-        #             compress_image(filename, output_file, target_size_kb=int(limit))
-        #             zipf.write(output_file, arcname=os.path.basename(output_file))
-        #             files_to_clean.append(output_file)
-
         outputs = args.get('outputs')
 
         with zipfile.ZipFile(zip_filename, 'w') as zipf:            
@@ -134,7 +110,7 @@ def compress():
                     # output_file = os.path.join(COMPRESSED_FOLDER, f'{os.path.basename(filename).rsplit(".", 1)[0]}.{format}')
                     output_file = ''.join([COMPRESSED_FOLDER, '/', f'{os.path.basename(filename).rsplit(".", 1)[0]}.{format}'])
 
-                    compress_image(filename, output_file, target_size_kb=int(limit))
+                    compress_image(filename, output_file, format, target_size_kb=int(limit))
                     
                     # The path inside the ZIP includes the folder name
                     inside_zip_path = ''.join([folder_name, '/', os.path.basename(output_file)])
