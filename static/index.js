@@ -201,7 +201,7 @@ function addThumbnail(file, container, downloadButton = false) {
         thumbnail.classList.add('thumbnail');
     }
     
-    thumbnail.appendChild(closeButton);
+    container.appendChild(closeButton);
     container.appendChild(thumbnail);
 }
 
