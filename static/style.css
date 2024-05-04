@@ -103,16 +103,17 @@ nav ul li a {
 
 
 .fa.fa-close.close-icon {
-  font-size: 12px;
+  font-size: 16px;
     position: relative; /* Изменено на absolute */
     top: 0; /* Перемещение крестика вверх */
     right: 0; /* Перемещение крестика вправо */
-    color: rgb(234, 20, 20);
+    color: rgb(255, 255, 255);
     cursor: pointer;
+  
 }
 
 .fa.fa-close.close-icon:hover {
-    color: #4bdb08; /* Зеленый цвет иконки при наведении */
+    color: #B0E73B; /* Зеленый цвет иконки при наведении */
 }
 
 
@@ -150,7 +151,7 @@ nav ul li a {
     padding: 12px;
     border: 1.4px solid #C479FF;
     border-radius: 12px;
-    margin-bottom: 32px;
+    margin-bottom: 0px;
 }
 
 .settings {
@@ -292,6 +293,7 @@ width: 120px;
 .thumbnail-img {
     max-width: 100px; /* Максимальная ширина изображения внутри тамбнейла */
     max-height: 100px; /* Максимальная высота изображения внутри тамбнейла */
+    padding-right: 20px;
     
 }
 
@@ -583,8 +585,8 @@ button:hover {
     border-radius: 2px;
     background-color: #3B3B3B;
     display: flex;
-    justify-content: center;
-    align-items: center;
+    justify-content: space-between;
+    align-items: flex-start;
     overflow: hidden; /* Обрезаем изображение, если оно выходит за пределы тамбнейла */
     border: 2px solid transparent; /* Добавляем рамку, начинающуюся прозрачной */
     /* transform: translateY(-50%); */
@@ -593,6 +595,7 @@ button:hover {
     animation-timing-function: cubic-bezier(.1,-.6,.2,0);
     transition: border-color 0.2s ease; /* Плавное изменение цвета бордера */
     position: relative;
+
   }
   
   @-webkit-keyframes Appearance {
@@ -624,7 +627,7 @@ button:hover {
     display: flex; /* Устанавливаем flex-контейнер */
     align-items: center; /* Выравниваем элементы по центру по вертикали */
     justify-content:space-between; /* Распределяем элементы по горизонтали */
-    width: 100%;
+    width: auto;
     height: 40px;
     border-radius: 6px;
     cursor: pointer;
@@ -633,6 +636,8 @@ button:hover {
     font-family: 'Axiforma', sans-serif;
     font-size: 8px; /* Default font size */
     overflow: hidden;
+    padding-left: 20px;
+    padding-right: 20px;
     
 }
 

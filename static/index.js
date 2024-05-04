@@ -192,10 +192,13 @@ function addThumbnail(file, container) {
         event.dataTransfer.setData('text/plain', file.name); // Store filename during drag
     });
 
-    thumbnail.appendChild(thumbnailImg);
+    
+    
 
     if (container.id == 'panel-thumbnails-container')
     {
+        thumbnail.appendChild(closeButton);
+        thumbnail.appendChild(thumbnailImg);
         thumbnail.classList.add('panel-thumbnail');
         thumbnail.appendChild(filename_text);
 
@@ -209,10 +212,12 @@ function addThumbnail(file, container) {
         thumbnail.appendChild(downloadButton);
     }
     else{
+        thumbnail.appendChild(closeButton);
+        thumbnail.appendChild(thumbnailImg);
         thumbnail.classList.add('thumbnail');
+        
     }
     
-    container.appendChild(closeButton);
     container.appendChild(thumbnail);
 }
 
@@ -365,10 +370,13 @@ function addPanel() {
     console.log(newPanel)
 
     // Add event listener for file upload input in the new panel
+    var settingsPanelUpper = newPanel.querySelector('.panel-upper');
     var fileUploadInputSmall = newPanel.querySelector('.panel-file-upload');
     var uploadBoxSmall = newPanel.querySelector('.upload-box-small');
     var fileUploadContainerSmall = newPanel.querySelector('.panel-upload-container');
-    var settingsPanelUpper = newPanel.querySelector('.panel-upper');
+    
+
+    settingsPanelUpper.insertBefore(closeButton, uploadBoxSmall);
 
     fileUploadInputSmall.addEventListener('change', () => {
         receiveFiles(fileUploadInputSmall.files, newPanel.index);
@@ -415,7 +423,7 @@ function addPanel() {
         }
     });
     
-    newPanel.insertBefore(closeButton, settingsPanelUpper);
+    // newPanel.insertBefore(closeButton, settingsPanelUpper);
     settingsContainer.insertBefore(newPanel, addButton);
 }
 
