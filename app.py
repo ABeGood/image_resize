@@ -38,20 +38,33 @@ def convert_image(img, format, n_of_colors):
 
 def compress_image(file_name, output_path, format, target_size_kb):
     format = format.upper()
+    n_of_colors_min = 0
+    n_of_colors_max = 256
     n_of_colors = 256
+    n_of_colors_last = 0
+
 
     try:
         img_orig = Image.open(''.join([UPLOAD_FOLDER, '/', file_name]))
 
         img, compressed_size_kb = convert_image(img_orig, format, n_of_colors)
 
-        while n_of_colors > 5:
+        while n_of_colors > 1:
+            n_of_colors = (n_of_colors_min + n_of_colors_max)//2
+
+            img, compressed_size_kb = convert_image(img_orig, format, n_of_colors)
+
             if compressed_size_kb <= target_size_kb:
+                n_of_colors_min = n_of_colors
+
+            elif compressed_size_kb > target_size_kb:
+                n_of_colors_max = n_of_colors
+
+            if n_of_colors == n_of_colors_last:
                 break
 
-            n_of_colors -= 1
-            
-            img, compressed_size_kb = convert_image(img_orig, format, n_of_colors)
+            n_of_colors_last = n_of_colors
+
 
         img.save(output_path, format=format)
         print(f"Image compressed and saved to {output_path} with file size {compressed_size_kb:.2f} KB")
