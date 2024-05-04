@@ -164,10 +164,12 @@ function refresh_preview() {
     }
 }
 
-function addThumbnail(file, container, downloadButton = false) {
+function addThumbnail(file, container) {
     const thumbnail = document.createElement('div');
     const thumbnailImg = document.createElement('img');
     const filename_text = document.createTextNode(file.name);
+
+    // filename_text.classList.add('panel-thumbnail-text')
 
     thumbnailImg.classList.add('thumbnail-img');
     thumbnailImg.src = URL.createObjectURL(file); // Setting the source of the image
@@ -175,7 +177,7 @@ function addThumbnail(file, container, downloadButton = false) {
 
     // Add red cross icon
     const closeButton = document.createElement('i');
-    closeButton.classList.add('fas', 'fa-times', 'close-icon');
+    closeButton.classList.add('fa', 'fa-close', 'close-icon');
     closeButton.addEventListener('click', (event) => {
         removeFromEverywhere = false;
         if (container.id == 'thumbnails-container-left')
@@ -196,6 +198,15 @@ function addThumbnail(file, container, downloadButton = false) {
     {
         thumbnail.classList.add('panel-thumbnail');
         thumbnail.appendChild(filename_text);
+
+        // Add download icon
+        const downloadButton = document.createElement('i');
+        downloadButton.classList.add('fa', 'fa-download', 'download-icon');
+        downloadButton.addEventListener('click', (event) => {
+            // downloadImage()
+        })
+
+        thumbnail.appendChild(downloadButton);
     }
     else{
         thumbnail.classList.add('thumbnail');
@@ -344,7 +355,7 @@ function addPanel() {
     panelFileLists[newPanel.index] = [];
 
     const closeButton = document.createElement('i');
-    closeButton.classList.add('fas', 'fa-times', 'close-icon');
+    closeButton.classList.add('fa', 'fa-close', 'close-icon');
     closeButton.addEventListener('click', () => {
         deletePanel(newPanel);
     });

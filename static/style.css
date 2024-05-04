@@ -102,18 +102,47 @@ nav ul li a {
 }
 
 
-.fas.fa-times.close-icon {
+.fa.fa-close.close-icon {
   font-size: 12px;
-    position: absolute; /* Изменено на absolute */
+    position: relative; /* Изменено на absolute */
     top: 0; /* Перемещение крестика вверх */
     right: 0; /* Перемещение крестика вправо */
-    color: white;
+    color: rgb(234, 20, 20);
     cursor: pointer;
 }
 
-.fas.fa-times.close-icon:hover {
-    color: #161616; /* Зеленый цвет иконки при наведении */
+.fa.fa-close.close-icon:hover {
+    color: #4bdb08; /* Зеленый цвет иконки при наведении */
 }
+
+
+.fa.fa-download.download-icon{
+    font-size: 24px;
+      float: right;
+      top: 0; /* Перемещение крестика вверх */
+      left: 0; /* Перемещение крестика вправо */
+      color: rgb(6, 244, 236);
+      cursor: pointer;
+  }
+  
+  .fa.fa-download.download-icon:hover {
+      color: #23e811; /* Зеленый цвет иконки при наведении */
+  }
+
+
+.fas.fa-file-download {
+    font-size: 12px;
+      position: relative; /* Изменено на absolute */
+      top: 50; /* Перемещение крестика вверх */
+      right: 50; /* Перемещение крестика вправо */
+      color: white;
+      cursor: pointer;
+  }
+  
+  .fas.fa-file-download {
+      color: #161616; /* Зеленый цвет иконки при наведении */
+  }
+
 
 .panel-upper {
     display: flex;
@@ -153,7 +182,6 @@ width: 120px;
 }
 
  .download {
-  
     width: 88px ; /* Ширина минус отступы */
     box-sizing: border-box;
     max-width: 100%; /* Ограничение по максимальной ширине */
@@ -587,20 +615,15 @@ button:hover {
     100% {opacity: 1;}
   }
 
-
-
 .thumbnail:hover {
     border-color: #B0E73B; /* Цвет бордера при наведении */
-
-
-  
 }
 
 
 .panel-thumbnail {
     display: flex; /* Устанавливаем flex-контейнер */
     align-items: center; /* Выравниваем элементы по центру по вертикали */
-    justify-content:flex-start; /* Распределяем элементы по горизонтали */
+    justify-content:space-between; /* Распределяем элементы по горизонтали */
     width: 100%;
     height: 40px;
     border-radius: 6px;
@@ -613,11 +636,18 @@ button:hover {
     
 }
 
+
+.panel-thumbnail-text {
+    font-family: 'Axiforma', sans-serif;
+    font-size: 20px; /* Default font size */
+}
+
 .panel-thumbnail .close-icon {
     position: absolute; /* Абсолютное позиционирование для крестика */
     top: 0; /* Отступ от верхнего края */
     right: 0; 
 }
+
 
 
 
