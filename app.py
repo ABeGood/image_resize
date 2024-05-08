@@ -20,6 +20,7 @@ def allowed_file(filename):
 
 def convert_image(img, format, n_of_colors):
     img = copy.copy(img)
+
     if format in ['JPEG', 'JPG']:
         img = img.convert('RGB')
 
@@ -31,7 +32,7 @@ def convert_image(img, format, n_of_colors):
     buffer = io.BytesIO()
     img.save(buffer, format)
     compressed_size_kb = len(buffer.getvalue()) / 1024
-    print(f'With {n_of_colors} colors compressed to {compressed_size_kb} KB')
+    print(f'With {n_of_colors} colors compressed to {compressed_size_kb} KB in {format} format.')
     buffer.close()
 
     return img, compressed_size_kb
@@ -46,13 +47,20 @@ def compress_image(file_name, output_path, format, target_size_kb):
 
     try:
         img_orig = Image.open(''.join([UPLOAD_FOLDER, '/', file_name]))
+        img = img_orig.copy()
 
-        img, compressed_size_kb = convert_image(img_orig, format, n_of_colors)
+        buffer = io.BytesIO()
+        img.save(buffer, format=format)
+        compressed_size_kb = len(buffer.getvalue()) / 1024
 
+        if compressed_size_kb <= target_size_kb:
+            img.save(output_path, format=format)
+            print(f"Image compressed and saved to {output_path} with file size {compressed_size_kb:.2f} KB")
+            return
+        
         while n_of_colors > 1:
-            n_of_colors = (n_of_colors_min + n_of_colors_max)//2
-
             img, compressed_size_kb = convert_image(img_orig, format, n_of_colors)
+            n_of_colors = (n_of_colors_min + n_of_colors_max)//2
 
             if compressed_size_kb <= target_size_kb:
                 n_of_colors_min = n_of_colors
